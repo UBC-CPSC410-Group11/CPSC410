@@ -2,42 +2,99 @@
 <CodeBase>
 	<Package name="apps">
 		<Module name="__init__.py"/>
-		<Module name="base.py"/>
-		<Module name="decorators.py"/>
-		<Module name="generic.py"/>
-		<Module name="simple.py"/>
+		<Module name="base.py">
+			<Class name="PyntaAppBase"/>
+			<Class name="PyntaApp"/>
+		</Module>
+		<Module name="decorators.py">
+			<FreeMethod name="require_method"/>
+		</Module>
+		<Module name="generic.py">
+			<Class name="CRUDApp"/>
+		</Module>
+		<Module name="simple.py">
+			<Class name="Static"/>
+		</Module>
 	</Package>
 	<Package name="conf">
-		<Module name="__init__.py"/>
+		<Module name="__init__.py">
+			<Class name="ConfigurationError"/>
+			<Class name="UnconfiguredSettings"/>
+			<Class name="Settings"/>
+			<FreeMethod name="setup_settings"/>
+		</Module>
 		<Module name="empty_settings.py"/>
-		<Module name="provider.py"/>
+		<Module name="provider.py">
+			<Class name="SettingsProvider"/>
+			<Class name="SettingsConsumer"/>
+		</Module>
 	</Package>
 	<Package name="core">
 		<Module name="__init__.py"/>
-		<Module name="main.py"/>
-		<Module name="paginator.py"/>
-		<Module name="server.py"/>
-		<Module name="session.py"/>
-		<Module name="urls.py"/>
+		<Module name="main.py">
+			<FreeMethod name="get_main_app"/>
+			<FreeMethod name="main"/>
+		</Module>
+		<Module name="paginator.py">
+			<Class name="_PageIterator"/>
+			<Class name="_PageSequence"/>
+			<Class name="Paginator"/>
+			<Class name="Page"/>
+		</Module>
+		<Module name="server.py">
+			<FreeMethod name="serve"/>
+		</Module>
+		<Module name="session.py">
+			<Class name="SessionBase"/>
+			<Class name="Session"/>
+			<Class name="LazySession"/>
+		</Module>
+		<Module name="urls.py">
+			<Class name="UrlMatch"/>
+			<FreeMethod name="url"/>
+		</Module>
 	</Package>
 	<Package name="storage">
 		<Module name="__init__.py"/>
-		<Module name="base.py"/>
-		<Module name="mongodb.py"/>
-		<Module name="mongoengine_storage.py"/>
+		<Module name="base.py">
+			<Class name="Storage"/>
+			<Class name="Anydbm"/>
+		</Module>
+		<Module name="mongodb.py">
+			<Class name="Mongodb"/>
+		</Module>
+		<Module name="mongoengine_storage.py">
+			<Class name="PyntaStorage"/>
+			<Class name="Mongoengine"/>
+		</Module>
 	</Package>
 	<Package name="templates">
 		<Module name="__init__.py"/>
-		<Module name="base.py"/>
-		<Module name="cheetahtemplates.py"/>
-		<Module name="jinja2templates.py"/>
-		<Module name="makotemplates.py"/>
+		<Module name="base.py">
+			<Class name="Renderer"/>
+			<Class name="PlainText"/>
+		</Module>
+		<Module name="cheetahtemplates.py">
+			<Class name="Cheetah"/>
+		</Module>
+		<Module name="jinja2templates.py">
+			<Class name="Jinja2"/>
+		</Module>
+		<Module name="makotemplates.py">
+			<Class name="Mako"/>
+		</Module>
 	</Package>
 	<Package name="utils">
 		<Module name="__init__.py"/>
-		<Module name="collections.py"/>
-		<Module name="decorators.py"/>
-		<Module name="importing.py"/>
+		<Module name="collections.py">
+			<FreeMethod name="filter_dict"/>
+		</Module>
+		<Module name="decorators.py">
+			<FreeMethod name="add_first_arg"/>
+		</Module>
+		<Module name="importing.py">
+			<FreeMethod name="simple_import"/>
+		</Module>
 	</Package>
 	<Package name="code">
 		<Module name="a.py"/>

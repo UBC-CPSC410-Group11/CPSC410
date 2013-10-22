@@ -8,6 +8,7 @@ import xml.etree.cElementTree as Tree
 import xml.dom.minidom as minidom
 import sys
 import os
+from ModuleParser import ModuleParser
 
 root = Tree.Element("CodeBase")
 
@@ -15,6 +16,9 @@ root = Tree.Element("CodeBase")
 ''' write moduleName  to xml file, open filePath and parse module '''
 def crawlModule(filePath, moduleName, xmlParent):
     module = Tree.SubElement(xmlParent, "Module", {'name' : moduleName})
+    parser = ModuleParser(module, filePath)
+    parser.parseCode()
+    
 
 
 ''' write packageName to xml file, crawl dirPath, for every file call crawlModule() '''    
