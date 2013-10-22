@@ -1,0 +1,45 @@
+<?xml version="1.0" ?>
+<CodeBase>
+	<Package name="apps">
+		<Module name="__init__.py"/>
+		<Module name="base.py"/>
+		<Module name="decorators.py"/>
+		<Module name="generic.py"/>
+		<Module name="simple.py"/>
+	</Package>
+	<Package name="conf">
+		<Module name="__init__.py"/>
+		<Module name="empty_settings.py"/>
+		<Module name="provider.py"/>
+	</Package>
+	<Package name="core">
+		<Module name="__init__.py"/>
+		<Module name="main.py"/>
+		<Module name="paginator.py"/>
+		<Module name="server.py"/>
+		<Module name="session.py"/>
+		<Module name="urls.py"/>
+	</Package>
+	<Package name="storage">
+		<Module name="__init__.py"/>
+		<Module name="base.py"/>
+		<Module name="mongodb.py"/>
+		<Module name="mongoengine_storage.py"/>
+	</Package>
+	<Package name="templates">
+		<Module name="__init__.py"/>
+		<Module name="base.py"/>
+		<Module name="cheetahtemplates.py"/>
+		<Module name="jinja2templates.py"/>
+		<Module name="makotemplates.py"/>
+	</Package>
+	<Package name="utils">
+		<Module name="__init__.py"/>
+		<Module name="collections.py"/>
+		<Module name="decorators.py"/>
+		<Module name="importing.py"/>
+	</Package>
+	<Package name="code">
+		<Module name="a.py"/>
+	</Package>
+</CodeBase>
