@@ -1,0 +1,12 @@
+class Package:
+	name = ""
+	modules = []
+	
+	def __init__(self, inName)
+		self.name = in_Name
+		
+	def addModule(in_Module)
+		modules.append(in_Module)
+	
+	def getModules()
+		return modules

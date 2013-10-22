@@ -1,0 +1,19 @@
+class Module:
+	name = ""
+	classes = []
+	freeMethods = 0
+	
+	def __init__(self, in_Name)
+		self.name = in_Name
+		
+	def addClass(in_Class)
+		classes.append(in_Class)
+	
+	def addFreeMethod()
+		freeMethods++
+	
+	def getClasses()
+		return classes
+	
+	def getFreeMethods()
+		return freeMethods
