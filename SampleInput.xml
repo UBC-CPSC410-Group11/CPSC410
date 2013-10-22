@@ -8,9 +8,7 @@
 				<ClassName name="Class2"></ClassName>
 			</OutCall>
 		</Class>
-		<FreeMethod>
-			<MethodName name="FreeMethod">=</MethodName>
-		</FreeMethod>
+		<FreeMethod name="FreeMethod"></FreeMethod>
 		<Class name="Class2" score="7" width="3" lines="35">
 			<Method name="Class2Method1" score="3" parameters="7" lines="3"></Method>
 			<Method name="Class2Method2" score="9" parameters="2" lines="32"></Method>

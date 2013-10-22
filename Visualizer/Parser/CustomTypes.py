@@ -7,12 +7,15 @@ class Class(object):
     name = ""
     methods = []
     outCalls = []
+    score = ""
+    width = ""
+    lines = ""
     
-    def __init__(self, in_Name, in_Package, in_Module):
+    def __init__(self, in_Name, in_Score, in_Width, in_Lines):
         self.name = in_Name
-        self.package = in_Package
-        self.module = in_Module
-        
+        self.score = in_Score
+        self.width = in_Width
+        self.lines = in_Lines
 
     def addMethod(self, in_Method):
         self.methods.append(in_Method)
