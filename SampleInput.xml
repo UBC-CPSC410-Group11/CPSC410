@@ -1,64 +1,30 @@
 <?xml version="1.0"?>
-<Package>
-	<Name>TempPackage1</Name>
-	<Module>
-    		<Name>TempMod1</Name>
-		<Class>
-			<Name>Class1</Name>
-			<Method>
-				<Name>Class1Method</Name>
-				<Score>10</Score>
-				<Parameters>2</Parameters>
-				<Lines>10</Lines>
-			</Method>
-			<Score>10</Score>
-			<Width>5</Width>
-			<Lines>10</Lines>
+<Codebase>
+<Package name="TempPackage">
+	<Module name="TempMod1">
+		<Class name="Class1" score="10" width="5" lines="10">
+			<Method name="Class1Method" score="10" parameters="2" lines="10"></Method>
 			<OutCall>
-				<ClassName>Class2</ClassName>
+				<ClassName name="Class2"></ClassName>
 			</OutCall>
 		</Class>
 		<FreeMethod>
-			<Name>FreeMethod</Name>
+			<MethodName name="FreeMethod">=</MethodName>
 		</FreeMethod>
-		<Class>
-			<Name>Class2</Name>
-			<Method>
-				<Name>Class2Method1</Name>
-				<Score>10</Score>
-				<Parameters>3</Parameters>
-				<Lines>15</Lines>
-			</Method>
-			<Method>
-				<Name>Class2Method2</Name>
-				<Score>4</Score>
-				<Parameters>9</Parameters>
-				<Lines>10</Lines>
-			</Method>
-			<Score>10</Score>
-			<Width>7</Width>
-			<Lines>25</Lines
-		</Class>
+		<Class name="Class2" score="7" width="3" lines="35">
+			<Method name="Class2Method1" score="3" parameters="7" lines="3"></Method>
+			<Method name="Class2Method2" score="9" parameters="2" lines="32"></Method>
+			<OutCall>
+				<ClassName name="Class2"></ClassName>
+			</OutCall>
+		</Class>		
+
 	</Module>
-	<Module>
-		<Name>TempMod2</Name>
-		<Class>
-			<Name>Class3</Name>
-			<Method>
-				<Name>Class3Method1</Name>
-				<Score>3</Score>
-				<Parameters>4</Parameters>
-				<Lines>18</Lines>
-			</Method>
-			<Method>
-				<Name>Class3Method2</Name>
-				<Score>8</Score>
-				<Parameters>3</Parameters>
-				<Lines>100</Lines>
-			</Method>
-			<Score>10</Score>
-			<Width>7</Width>
-			<Lines>118</Lines
+	<Module name="TempMod2">
+		<Class name="Class3" score="4" width="8" lines="100">
+			<Method name="Class3Method1" score="3" parameters="4" lines="18"></Method>
+			<Method name="Class3Method2" score="6" parameters="2" lines="82"></Method>
 		</Class>
 	</Module>
 </Package>
+</Codebase>
