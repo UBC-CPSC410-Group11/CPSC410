@@ -12,6 +12,8 @@ class Class(object):
     lines = ""
     
     def __init__(self, in_Name, in_Score, in_Width, in_Lines):
+        self.methods = []
+        self.outCalls = []
         self.name = in_Name
         self.score = in_Score
         self.width = in_Width
@@ -28,6 +30,18 @@ class Class(object):
         
     def getMethods(self):
         return self.methods
+    
+    def getName(self):
+        return self.name
+    
+    def getScore(self):
+        return self.score
+    
+    def getWidth(self):
+        return self.width
+    
+    def getLines(self):
+        return self.lines
     
 class Method(object):
     name = ""
@@ -61,6 +75,8 @@ class Module(object):
     
     def __init__(self, in_Name):
         self.name = in_Name
+        self.classes = []
+        self.freeMethods = 0
         
     def addClass(self, in_Class):
         self.classes.append(in_Class)
@@ -73,6 +89,9 @@ class Module(object):
     
     def getFreeMethods(self):
         return self.freeMethods
+    
+    def getName(self):
+        return self.name
 
 class Package(object):
     name = ""
@@ -80,9 +99,13 @@ class Package(object):
     
     def __init__(self, in_Name):
         self.name = in_Name
+        self.modules = []
         
     def addModule(self, in_Module):
         self.modules.append(in_Module)
     
     def getModules(self):
         return self.modules
+    
+    def getName(self):
+        return self.name
