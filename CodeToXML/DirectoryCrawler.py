@@ -38,7 +38,7 @@ def main(argv):
         for d in dirs:
             crawlPackage(os.path.join(path, d), d)
             
-    xmlName = os.path.dirname(argv) + ".xml"
+    xmlName = argv + ".xml"
     xmlstring = minidom.parseString(Tree.tostring(root)).toprettyxml();
     f = open(xmlName, 'w')
     f.write(xmlstring)

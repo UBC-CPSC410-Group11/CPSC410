@@ -3,30 +3,30 @@
 	<Package name="apps">
 		<Module name="__init__.py"/>
 		<Module name="base.py">
-			<Class name="PyntaAppBase"/>
-			<Class name="PyntaApp"/>
+			<Class lines="11" name="PyntaAppBase" score="10"/>
+			<Class lines="11" name="PyntaApp" score="10"/>
 		</Module>
 		<Module name="decorators.py">
 			<FreeMethod name="require_method"/>
 		</Module>
 		<Module name="generic.py">
-			<Class name="CRUDApp"/>
+			<Class lines="11" name="CRUDApp" score="10"/>
 		</Module>
 		<Module name="simple.py">
-			<Class name="Static"/>
+			<Class lines="11" name="Static" score="10"/>
 		</Module>
 	</Package>
 	<Package name="conf">
 		<Module name="__init__.py">
-			<Class name="ConfigurationError"/>
-			<Class name="UnconfiguredSettings"/>
-			<Class name="Settings"/>
+			<Class lines="11" name="ConfigurationError" score="10"/>
+			<Class lines="11" name="UnconfiguredSettings" score="10"/>
+			<Class lines="11" name="Settings" score="10"/>
 			<FreeMethod name="setup_settings"/>
 		</Module>
 		<Module name="empty_settings.py"/>
 		<Module name="provider.py">
-			<Class name="SettingsProvider"/>
-			<Class name="SettingsConsumer"/>
+			<Class lines="11" name="SettingsProvider" score="10"/>
+			<Class lines="11" name="SettingsConsumer" score="10"/>
 		</Module>
 	</Package>
 	<Package name="core">
@@ -36,52 +36,52 @@
 			<FreeMethod name="main"/>
 		</Module>
 		<Module name="paginator.py">
-			<Class name="_PageIterator"/>
-			<Class name="_PageSequence"/>
-			<Class name="Paginator"/>
-			<Class name="Page"/>
+			<Class lines="11" name="_PageIterator" score="10"/>
+			<Class lines="11" name="_PageSequence" score="10"/>
+			<Class lines="11" name="Paginator" score="10"/>
+			<Class lines="11" name="Page" score="10"/>
 		</Module>
 		<Module name="server.py">
 			<FreeMethod name="serve"/>
 		</Module>
 		<Module name="session.py">
-			<Class name="SessionBase"/>
-			<Class name="Session"/>
-			<Class name="LazySession"/>
+			<Class lines="11" name="SessionBase" score="10"/>
+			<Class lines="11" name="Session" score="10"/>
+			<Class lines="11" name="LazySession" score="10"/>
 		</Module>
 		<Module name="urls.py">
-			<Class name="UrlMatch"/>
+			<Class lines="11" name="UrlMatch" score="10"/>
 			<FreeMethod name="url"/>
 		</Module>
 	</Package>
 	<Package name="storage">
 		<Module name="__init__.py"/>
 		<Module name="base.py">
-			<Class name="Storage"/>
-			<Class name="Anydbm"/>
+			<Class lines="11" name="Storage" score="10"/>
+			<Class lines="11" name="Anydbm" score="10"/>
 		</Module>
 		<Module name="mongodb.py">
-			<Class name="Mongodb"/>
+			<Class lines="11" name="Mongodb" score="10"/>
 		</Module>
 		<Module name="mongoengine_storage.py">
-			<Class name="PyntaStorage"/>
-			<Class name="Mongoengine"/>
+			<Class lines="11" name="PyntaStorage" score="10"/>
+			<Class lines="11" name="Mongoengine" score="10"/>
 		</Module>
 	</Package>
 	<Package name="templates">
 		<Module name="__init__.py"/>
 		<Module name="base.py">
-			<Class name="Renderer"/>
-			<Class name="PlainText"/>
+			<Class lines="11" name="Renderer" score="10"/>
+			<Class lines="11" name="PlainText" score="10"/>
 		</Module>
 		<Module name="cheetahtemplates.py">
-			<Class name="Cheetah"/>
+			<Class lines="11" name="Cheetah" score="10"/>
 		</Module>
 		<Module name="jinja2templates.py">
-			<Class name="Jinja2"/>
+			<Class lines="11" name="Jinja2" score="10"/>
 		</Module>
 		<Module name="makotemplates.py">
-			<Class name="Mako"/>
+			<Class lines="11" name="Mako" score="10"/>
 		</Module>
 	</Package>
 	<Package name="utils">
