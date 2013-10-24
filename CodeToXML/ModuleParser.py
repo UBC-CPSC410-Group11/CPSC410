@@ -5,8 +5,6 @@ Created on 21.10.2013
 '''
 
 import xml.etree.cElementTree as Tree
-import sys
-import os
 
 
 ''' here the file parsing takes place '''
