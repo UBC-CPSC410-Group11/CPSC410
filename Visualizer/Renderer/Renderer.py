@@ -3,6 +3,9 @@ Created on Oct 23, 2013
 
 @author: Mike
 '''
+from Parser.CustomTypes import *
+
+
 class Renderer(object):
     MAX_WIDTH = 1200
     MAX_HEIGHT = 900
@@ -32,12 +35,23 @@ class Renderer(object):
         self.packages = packages
         self.packageCount = len(packages)
         
+    '''
+    Call this method to generate the output image
+    '''
+    def renderNeighbourhood(self):
+        for package in self.packages:
+            self.buildPackage(package)
+        return None
+
     def buildPackage(self, package):
-        #TODO Implement
+        #Packages are implicitly represented in the output as blocks which are close together
+        for module in package.modules:
+            self.buildBlock(module)
         return None
     
     def buildBlock (self, module):
-        #TODO Implement
+        #Modules are explicitly represented in the output as blocks (of 'grass') which surround the houses(classes) of that module
+        #TODO
         return None
         
     def buildHouse(self, theClass):
@@ -144,6 +158,81 @@ class Block(object):
         self.endXValue = endXValue
         self.colour = colour
 
+
+#FOR TESTTING
+def main():
+    renderer = Renderer()
+    
+    #make some packages
+    package1 = Package('P1')
+    package2 = Package('P2')
+    package3 = Package('P3')
+    
+    #make some classes:
+    class1 = Class('Class1', 10, 60, 8)
+    class2 = Class('Class2', 10, 120, 9)
+    class3 = Class('Class3', 10, 45, 7)
+    class4 = Class('Class4', 10, 75, 8)
+    class5 = Class('Class5', 10, 90, 4)
+    class6 = Class('Class6', 10, 60, 6)
+    class7 = Class('Class7', 10, 70, 5)
+    
+    #No methods in this iteration
+    
+    #Package1:
+    module1 = Module('Module1')
+    module2 = Module('Module2')
+
+    module1.addClass(class5)
+    module1.addClass(class3)
+    module2.addClass(class1)
+    module2.addClass(class4)
+    module2.addClass(class2)
+    
+    package1.addModule(module1)
+    package1.addModule(module2)
+    
+    #Package2:
+    module3 = Module('Module3')
+    module4 = Module('Module4')
+    module5 = Module('Module5')
+    
+    module3.addClass(class2)
+    module3.addClass(class7)
+    module4.addClass(class5)
+    module5.addClass(class1)
+    module5.addClass(class4)
+    module5.addClass(class6)
+    
+    package2.addModule(module3)
+    package2.addModule(module4)
+    package2.addModule(module5)
+    
+    #Package3:
+    module6 = Module('Module6')
+    
+    module6.addClass(class3)
+    module6.addClass(class7)
+    module6.addClass(class2)
+    module6.addClass(class5)
+    module6.addClass(class1)
+    module6.addClass(class4)
+    module6.addClass(class6)
+    
+    package3.addModule(module6)
+
+    #add the packages
+    renderer.packages.append(package1)
+    renderer.packages.append(package2)
+    renderer.packages.append(package3)
+    
+    renderer.renderNeighbourhood()
+    return None
+                
+        
+        
+if __name__ == "__main__":
+        main()
   
         
         
