@@ -4,15 +4,24 @@ Created on Oct 23, 2013
 @author: Mike
 '''
 from Parser.CustomTypes import *
+import sys
+import pygame
+
 
 
 class Renderer(object):
     MAX_WIDTH = 1200
-    MAX_HEIGHT = 900
+    MAX_HEIGHT = 700
     HOUSE_SPACER = 10
-    BLOCK_X_SPACER = 10
-    BLOCK_Y_SPACER = 10
-
+    BLOCK_X_SPACER = 20 #Space between the edge of the picture and the left and right sides of a block, or between blocks
+    BLOCK_Y_SPACER = 20 #Space between the edge of the picture and the top or botom of a block, or between blocks
+    BLOCK_HEIGHT = 100
+    
+    BACKGROUND_COLOUR = (169,167,146)
+    GREEN_BLOCK_COLOUR = (141,153,109)
+    
+    screen = {}
+    
     packages = []
     packageCount = 0
     
@@ -24,23 +33,50 @@ class Renderer(object):
     fountain = {}
     blocks = []
     
-    width = 0
-    height = 0
-    currentX = 0
-    currentY = 0
+    currentX = BLOCK_X_SPACER
+    currentY = BLOCK_Y_SPACER
+    currentSide = 'L'  #'L' or 'R'
+    rowWidth = 0
+    remainingRowWidth = 0
     currentHouseTopLeft = (0,0)
-    newBlock = 1
     
     def _init_(self, packages):
         self.packages = packages
-        self.packageCount = len(packages)
+
+        
+    def setPackages(self, packages):
+        self.packages = packages
+
         
     '''
     Call this method to generate the output image
     '''
     def renderNeighbourhood(self):
+        self.rowWidth = (self.MAX_WIDTH / 2) - (1.5 * self.BLOCK_X_SPACER)
+        self.remainingRowWidth = self.rowWidth
+        self.buildNeighbourhood()
+        self.initDrawing()
+        #draw individual elements here
+        self.drawBlocks()
+        
+        
+        #finalize drawing
+        pygame.display.update()
+        control = 1
+        while control:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit(); sys.exit();
+        
+        return None
+    
+    def buildNeighbourhood(self):
+        
         for package in self.packages:
             self.buildPackage(package)
+        '''
+        self.buildPackage(self.packages[0])
+        '''
         return None
 
     def buildPackage(self, package):
@@ -48,11 +84,90 @@ class Renderer(object):
         for module in package.modules:
             self.buildBlock(module)
         return None
-    
+
+
     def buildBlock (self, module):
         #Modules are explicitly represented in the output as blocks (of 'grass') which surround the houses(classes) of that module
-        #TODO
+        blockRects = self.calculateBlockDimensions(module) #a list of tuples representing the rect dimensions for a single block
+
+        i = 0
+        colours = [(141,153,109), (0,0,255), (0,0,0)]
+        for br in blockRects:
+            x = br[0]
+            y = br[1]
+            c = br[2]
+            
+            colour = colours[i]
+            
+            if (x > self.remainingRowWidth): #Go to next row
+                self.currentY = self.currentY + self.BLOCK_HEIGHT + self.BLOCK_Y_SPACER
+                if (self.currentSide == 'L'):
+                    self.currentX = self.BLOCK_X_SPACER
+                    self.remainingRowWidth = self.rowWidth
+            
+            if (c == 1): #block fits perfectly in row
+                blockTopLeft = (self.currentX, self.currentY)
+                block = Block(blockTopLeft, x, y, colour)
+                self.blocks.append(block)
+                self.currentY = self.currentY + self.BLOCK_HEIGHT + self.BLOCK_Y_SPACER #Go to next row
+                self.remainingRowWidth = self.rowWidth
+                
+            if (c == 0):
+                if self.remainingRowWidth != self.rowWidth:
+                    self.currentX = self.currentX + self.BLOCK_X_SPACER
+                    
+                blockTopLeft = (self.currentX, self.currentY)
+                self.currentX = self.currentX + x
+                block = Block(blockTopLeft, x, y, colour)
+                self.blocks.append(block)
+                self.remainingRowWidth = self.remainingRowWidth - x
+                
+            #FOR TESTING - REMOVE LATER
+            
+            print '***************'
+            print block.getTopLeft()
+            print block.getWidth()
+            print block.getLength()
+            prnt1 = ('row width', self.rowWidth)
+            print prnt1
+            prnt2 = ('remaining row width', self.remainingRowWidth)
+            print prnt2
+            print '****   ********'
+            i = i + 1
         return None
+    '''
+    Return a list of tuples (x,y, c) which are the width, height of the rectangles needed to represent a block, and c
+    is 1 if the rectangle occupies a complete row, and 0 if it occupies a partial row
+    '''
+    def calculateBlockDimensions(self, module):
+        dimensions = []
+        classes = module.getClasses()
+        #Determine the width needed to represent a block
+        totalWidth = 0
+        for c in classes:
+            totalWidth = totalWidth + self.HOUSE_SPACER
+            width = c.getWidth()
+            totalWidth = totalWidth + width
+        
+        lastHouseWidth = width
+        
+        halfScreen = (self.MAX_WIDTH / 2) - (1.5 * self.BLOCK_X_SPACER)
+        
+        tempTotalWidth = totalWidth
+        
+        while (tempTotalWidth > halfScreen):
+            tempTotalWidth = tempTotalWidth - halfScreen
+            rect = (halfScreen, self.BLOCK_HEIGHT, 1)
+            dimensions.append(rect)
+        
+        if (tempTotalWidth != 0):
+            if (tempTotalWidth >= lastHouseWidth):
+                rect = (tempTotalWidth, self.BLOCK_HEIGHT, 0)
+            else:
+                rect = (lastHouseWidth, self.BLOCK_HEIGHT, 0)
+            dimensions.append(rect)
+        return dimensions
+
         
     def buildHouse(self, theClass):
         #TDOO Implement
@@ -62,11 +177,35 @@ class Renderer(object):
         #TODO Implement
         return None
     
-    #May need more helpers...
+    def initDrawing(self):
+        pygame.init()
+        self.screen = pygame.display.set_mode((self.MAX_WIDTH, self.MAX_HEIGHT))
+        self.screen.fill(self.BACKGROUND_COLOUR)
+        return None
+    
+    def drawBlocks(self):
+        for block in self.blocks:
+            self.drawBlock(block)
+        return None
     
     def drawBlock(self, block):
-        #TODO Implement
+        topLeft = block.getTopLeft()
+        left = topLeft[0]
+        top = topLeft[1]
+        length = block.getLength()
+        width = block.getWidth()
+        colour = block.getColour()
+        
+        rect = (left, top, width, length)
+        
+        pygame.draw.rect(self.screen, colour, rect, 0)
+        
         return None     
+    
+    def drawHouses(self):
+        for house in self.houses:
+            self.drawHouse(house)
+        return None
     
     def drawHouse(self, house):
         #TODO Implement
@@ -147,21 +286,30 @@ class Fountain(object):
         self.topLeft = topLeft
         
 class Block(object):
-    numOfRows = 0
     topLeft = (0,0)
-    endXValue = 0
+    length = 0
+    width = 0
     colour = (0,0,0)
     
-    def __init__(self, numOfRows, topLeft, endXValue, colour):
-        self.numOfRows = numOfRows
+    def __init__(self, topLeft, width, length, colour):
         self.topLeft = topLeft
-        self.endXValue = endXValue
+        self.length = length
+        self.width = width
         self.colour = colour
+        
+    def getTopLeft(self):
+        return self.topLeft
+    def getLength(self):
+        return self.length
+    def getWidth(self):
+        return self.width
+    def getColour(self):
+        return self.colour
 
 
 #FOR TESTTING
 def main():
-    renderer = Renderer()
+    
     
     #make some packages
     package1 = Package('P1')
@@ -221,10 +369,14 @@ def main():
     
     package3.addModule(module6)
 
-    #add the packages
-    renderer.packages.append(package1)
-    renderer.packages.append(package2)
-    renderer.packages.append(package3)
+
+    packagesOne = []
+    packagesOne.append(package1)
+    packagesOne.append(package2)
+    packagesOne.append(package3)
+    
+    renderer = Renderer()
+    renderer.setPackages(packagesOne)
     
     renderer.renderNeighbourhood()
     return None
