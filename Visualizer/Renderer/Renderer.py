@@ -12,7 +12,8 @@ import pygame
 class Renderer(object):
     MAX_WIDTH = 1200
     MAX_HEIGHT = 700
-    HOUSE_SPACER = 10
+    HOUSE_X_SPACER = 10
+    HOUSE_Y_SPACER = 10
     BLOCK_X_SPACER = 20 #Space between the edge of the picture and the left and right sides of a block, or between blocks
     BLOCK_Y_SPACER = 20 #Space between the edge of the picture and the top or botom of a block, or between blocks
     BLOCK_HEIGHT = 100
@@ -20,6 +21,7 @@ class Renderer(object):
     
     BACKGROUND_COLOUR = (169,167,146)
     GREEN_BLOCK_COLOUR = (141,153,109)
+    RED_HOUSE_COLOUR = (256,0,0)
     
     screen = {}
     
@@ -54,7 +56,8 @@ class Renderer(object):
     Call this method to generate the output image
     '''
     def renderNeighbourhood(self):
-        self.rowWidth = (self.MAX_WIDTH / 2) - (1.5 * self.BLOCK_X_SPACER)
+        #self.rowWidth = (self.MAX_WIDTH / 2) - (1.5 * self.BLOCK_X_SPACER) - Uncomment to change to half-screen spacing
+        self.rowWidth = self.MAX_WIDTH - 2 * self.BLOCK_X_SPACER
         self.remainingRowWidth = self.rowWidth
         self.rowHeight = (self.MAX_HEIGHT - 2 * self.BLOCK_Y_SPACER)
         self.remainingRowHeight = self.rowHeight
@@ -63,14 +66,6 @@ class Renderer(object):
         self.initDrawing()
         #draw individual elements here
         self.drawBlocks()
-        
-        '''
-        #FOR TESTING - DRAW RECTS AROUND LEGAL AREA
-        rect1 = (self.BLOCK_X_SPACER, self.BLOCK_Y_SPACER, self.rowWidth, self.rowHeight)
-        pygame.draw.rect(self.screen, (0,0,0), rect1, 1)
-        rect2 = (2 * self.BLOCK_X_SPACER + self.rowWidth, self.BLOCK_Y_SPACER, self.rowWidth, self.rowHeight)
-        pygame.draw.rect(self.screen, (0,0,0), rect2, 1)
-        '''
         
         #finalize drawing
         pygame.display.update()
@@ -113,12 +108,14 @@ class Renderer(object):
             topLeft = self.blockCalculatePosition(x, y)
             block = Block(topLeft, x, y, colour)
             self.blocks.append(block)
+            
             if (c == 1 and i != length - 1 and blockRects[i+1][2] != 1): #the block spans more than 1 row and the current rect is the last complete row
                 width = blockRects[i+1][0]
                 miniTopLeft = (topLeft[0], topLeft[1] + self.BLOCK_HEIGHT)
                 miniBlock = Block(miniTopLeft, width, self.BLOCK_Y_SPACER, colour)
                 self.blocks.append(miniBlock)
                 print width
+            
             i = i + 1
             #FOR TESTING - REMOVE LATER
             '''
@@ -138,7 +135,7 @@ class Renderer(object):
             '''
         return None
     '''
-    Return a list of tuples (x,y, c) which are the width, height of the rectangles needed to represent a block, and c
+    Return a list of tuples (x,y,c) which are the width, height of the rectangles needed to represent a block, and c
     is 1 if the rectangle occupies a complete row, and 0 if it occupies a partial row
     '''
     def calculateBlockDimensions(self, module):
@@ -147,7 +144,7 @@ class Renderer(object):
         #Determine the width needed to represent a block
         totalWidth = 0
         for c in classes:
-            totalWidth = totalWidth + self.HOUSE_SPACER
+            totalWidth = totalWidth + self.HOUSE_X_SPACER
             width = c.getWidth()
             totalWidth = totalWidth + width
         
@@ -155,10 +152,15 @@ class Renderer(object):
         halfScreen = self.rowWidth
         tempTotalWidth = totalWidth
         
+        
+        #create n number of full row rects
+        
         while (tempTotalWidth > halfScreen):
             tempTotalWidth = tempTotalWidth - halfScreen
             rect = (halfScreen, self.BLOCK_HEIGHT, 1)
             dimensions.append(rect)
+            
+        #create the last rect
         
         if (tempTotalWidth != 0):
             if (tempTotalWidth >= lastHouseWidth):
@@ -169,7 +171,8 @@ class Renderer(object):
                 rect = (self.MIN_BLOCK_WIDTH, self.BLOCK_HEIGHT, 0)
             dimensions.append(rect)
         return dimensions
-
+    
+    
         
     def buildHouse(self, theClass):
         #TDOO Implement
