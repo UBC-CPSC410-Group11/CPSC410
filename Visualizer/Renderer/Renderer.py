@@ -16,6 +16,7 @@ class Renderer(object):
     BLOCK_X_SPACER = 20 #Space between the edge of the picture and the left and right sides of a block, or between blocks
     BLOCK_Y_SPACER = 20 #Space between the edge of the picture and the top or botom of a block, or between blocks
     BLOCK_HEIGHT = 100
+    MIN_BLOCK_WIDTH = 100
     
     BACKGROUND_COLOUR = (169,167,146)
     GREEN_BLOCK_COLOUR = (141,153,109)
@@ -23,7 +24,6 @@ class Renderer(object):
     screen = {}
     
     packages = []
-    packageCount = 0
     
     houses = []
     windows = []
@@ -41,7 +41,6 @@ class Renderer(object):
     rightSideRowStart = 0
     totalRowHeight = 0
     remainingRowHeight = 0
-    currentHouseTopLeft = (0,0)
     
     def _init_(self, packages):
         self.packages = packages
@@ -65,12 +64,13 @@ class Renderer(object):
         #draw individual elements here
         self.drawBlocks()
         
-        
+        '''
         #FOR TESTING - DRAW RECTS AROUND LEGAL AREA
         rect1 = (self.BLOCK_X_SPACER, self.BLOCK_Y_SPACER, self.rowWidth, self.rowHeight)
         pygame.draw.rect(self.screen, (0,0,0), rect1, 1)
         rect2 = (2 * self.BLOCK_X_SPACER + self.rowWidth, self.BLOCK_Y_SPACER, self.rowWidth, self.rowHeight)
         pygame.draw.rect(self.screen, (0,0,0), rect2, 1)
+        '''
         
         #finalize drawing
         pygame.display.update()
@@ -101,19 +101,27 @@ class Renderer(object):
     def buildBlock (self, module):
         #Modules are explicitly represented in the output as blocks (of 'grass') which surround the houses(classes) of that module
         blockRects = self.calculateBlockDimensions(module) #a list of tuples representing the rect dimensions for a single block
-    
-        for br in blockRects:
-            x = br[0]
-            y = br[1]
-            c = br[2]
+        colour = self.GREEN_BLOCK_COLOUR #change later to represent module score
+        i = 0
+        length = len(blockRects)
+        while i < length:
      
-            topLeft = self.blockCalculatePosition(x, y)
-            block = Block(topLeft, x, y, self.GREEN_BLOCK_COLOUR)
-            self.blocks.append(block)
-            print topLeft
-              
-            #FOR TESTING - REMOVE LATER
+            x = blockRects[i][0]
+            y = blockRects[i][1]
+            c = blockRects[i][2]
             
+            topLeft = self.blockCalculatePosition(x, y)
+            block = Block(topLeft, x, y, colour)
+            self.blocks.append(block)
+            if (c == 1 and i != length - 1 and blockRects[i+1][2] != 1): #the block spans more than 1 row and the current rect is the last complete row
+                width = blockRects[i+1][0]
+                miniTopLeft = (topLeft[0], topLeft[1] + self.BLOCK_HEIGHT)
+                miniBlock = Block(miniTopLeft, width, self.BLOCK_Y_SPACER, colour)
+                self.blocks.append(miniBlock)
+                print width
+            i = i + 1
+            #FOR TESTING - REMOVE LATER
+            '''
             print '***************'
             print block.getTopLeft()
             print block.getWidth()
@@ -127,7 +135,7 @@ class Renderer(object):
             prnt4 = ('remaining row height', self.remainingRowHeight)
             print prnt4
             print '****   ********'
-            
+            '''
         return None
     '''
     Return a list of tuples (x,y, c) which are the width, height of the rectangles needed to represent a block, and c
@@ -144,9 +152,7 @@ class Renderer(object):
             totalWidth = totalWidth + width
         
         lastHouseWidth = width
-        
-        halfScreen = (self.MAX_WIDTH / 2) - (1.5 * self.BLOCK_X_SPACER)
-        
+        halfScreen = self.rowWidth
         tempTotalWidth = totalWidth
         
         while (tempTotalWidth > halfScreen):
@@ -157,8 +163,10 @@ class Renderer(object):
         if (tempTotalWidth != 0):
             if (tempTotalWidth >= lastHouseWidth):
                 rect = (tempTotalWidth, self.BLOCK_HEIGHT, 0)
-            else:
+            elif(lastHouseWidth > self.MIN_BLOCK_WIDTH):
                 rect = (lastHouseWidth, self.BLOCK_HEIGHT, 0)
+            else:
+                rect = (self.MIN_BLOCK_WIDTH, self.BLOCK_HEIGHT, 0)
             dimensions.append(rect)
         return dimensions
 
@@ -401,6 +409,7 @@ def main():
     module4.addClass(class5)
     module5.addClass(class1)
     module5.addClass(class4)
+    module5.addClass(class1)
     
     package2.addModule(module3)
     package2.addModule(module4)
@@ -414,6 +423,9 @@ def main():
     module10 = Module('Module10')
     module11 = Module('Module11')
     module12 = Module('Module12')
+    module13 = Module('Module13')
+    module14 = Module('Module14')
+    module15 = Module('Module15')
     
     module6.addClass(class3)
     module6.addClass(class7)
