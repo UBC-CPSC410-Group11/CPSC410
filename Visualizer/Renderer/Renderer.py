@@ -38,6 +38,9 @@ class Renderer(object):
     currentSide = 'L'  #'L' or 'R'
     rowWidth = 0
     remainingRowWidth = 0
+    rightSideRowStart = 0
+    totalRowHeight = 0
+    remainingRowHeight = 0
     currentHouseTopLeft = (0,0)
     
     def _init_(self, packages):
@@ -54,11 +57,20 @@ class Renderer(object):
     def renderNeighbourhood(self):
         self.rowWidth = (self.MAX_WIDTH / 2) - (1.5 * self.BLOCK_X_SPACER)
         self.remainingRowWidth = self.rowWidth
+        self.rowHeight = (self.MAX_HEIGHT - 2 * self.BLOCK_Y_SPACER)
+        self.remainingRowHeight = self.rowHeight
+        self.rightSideRowStart = self.BLOCK_X_SPACER * 2 + self.rowWidth
         self.buildNeighbourhood()
         self.initDrawing()
         #draw individual elements here
         self.drawBlocks()
         
+        
+        #FOR TESTING - DRAW RECTS AROUND LEGAL AREA
+        rect1 = (self.BLOCK_X_SPACER, self.BLOCK_Y_SPACER, self.rowWidth, self.rowHeight)
+        pygame.draw.rect(self.screen, (0,0,0), rect1, 1)
+        rect2 = (2 * self.BLOCK_X_SPACER + self.rowWidth, self.BLOCK_Y_SPACER, self.rowWidth, self.rowHeight)
+        pygame.draw.rect(self.screen, (0,0,0), rect2, 1)
         
         #finalize drawing
         pygame.display.update()
@@ -89,39 +101,17 @@ class Renderer(object):
     def buildBlock (self, module):
         #Modules are explicitly represented in the output as blocks (of 'grass') which surround the houses(classes) of that module
         blockRects = self.calculateBlockDimensions(module) #a list of tuples representing the rect dimensions for a single block
-
-        i = 0
-        colours = [(141,153,109), (0,0,255), (0,0,0)]
+    
         for br in blockRects:
             x = br[0]
             y = br[1]
             c = br[2]
-            
-            colour = colours[i]
-            
-            if (x > self.remainingRowWidth): #Go to next row
-                self.currentY = self.currentY + self.BLOCK_HEIGHT + self.BLOCK_Y_SPACER
-                if (self.currentSide == 'L'):
-                    self.currentX = self.BLOCK_X_SPACER
-                    self.remainingRowWidth = self.rowWidth
-            
-            if (c == 1): #block fits perfectly in row
-                blockTopLeft = (self.currentX, self.currentY)
-                block = Block(blockTopLeft, x, y, colour)
-                self.blocks.append(block)
-                self.currentY = self.currentY + self.BLOCK_HEIGHT + self.BLOCK_Y_SPACER #Go to next row
-                self.remainingRowWidth = self.rowWidth
-                
-            if (c == 0):
-                if self.remainingRowWidth != self.rowWidth:
-                    self.currentX = self.currentX + self.BLOCK_X_SPACER
-                    
-                blockTopLeft = (self.currentX, self.currentY)
-                self.currentX = self.currentX + x
-                block = Block(blockTopLeft, x, y, colour)
-                self.blocks.append(block)
-                self.remainingRowWidth = self.remainingRowWidth - x
-                
+     
+            topLeft = self.blockCalculatePosition(x, y)
+            block = Block(topLeft, x, y, self.GREEN_BLOCK_COLOUR)
+            self.blocks.append(block)
+            print topLeft
+              
             #FOR TESTING - REMOVE LATER
             
             print '***************'
@@ -132,8 +122,12 @@ class Renderer(object):
             print prnt1
             prnt2 = ('remaining row width', self.remainingRowWidth)
             print prnt2
+            prnt3 = ('row height', self.rowHeight)
+            print prnt3
+            prnt4 = ('remaining row height', self.remainingRowHeight)
+            print prnt4
             print '****   ********'
-            i = i + 1
+            
         return None
     '''
     Return a list of tuples (x,y, c) which are the width, height of the rectangles needed to represent a block, and c
@@ -229,7 +223,64 @@ class Renderer(object):
     
     def drawTent(self, tent):
         #TODO Implement
-        return None               
+        return None  
+    '''        
+    Find the next available place for a block given the width and height, and update
+    currentX, currentY, currentSide accordingly
+    returns (x,y) as the topLeft coords of the block
+    '''
+    def blockCalculatePosition(self, width, height):
+        topLeft = (0,0)
+        spaceForNewRow = 0
+        if (self.remainingRowHeight >= (1 * self.BLOCK_Y_SPACER) + 2 * self.BLOCK_HEIGHT):
+            spaceForNewRow = 1   
+        spaceOnCurrentRow = 0
+        if (self.remainingRowWidth >= width):
+            spaceOnCurrentRow = 1
+        
+        if (spaceOnCurrentRow == 1): #if there's space on the current row:
+            self.currentX = self.currentX
+            topLeft = (self.currentX, self.currentY);
+            self.blockUpdateHorizontalPosition(width)
+            return topLeft
+
+        else: #go to a new row
+            self.remainingRowWidth = self.rowWidth
+            if (spaceForNewRow == 1):
+                #go to start of a new row on the same side
+                if self.currentSide == 'L':
+                    self.currentX = self.BLOCK_X_SPACER
+                    self.blockUpdateVerticalPosition(height)
+                elif self.currentSide == 'R':
+                    self.currentX = self.rightSideRowStart
+                    self.blockUpdateVerticalPosition(height)
+                topLeft = (self.currentX, self.currentY)
+                self.blockUpdateHorizontalPosition(width)
+                return topLeft
+                
+            else:  #go to other side
+                if self.currentSide == 'L':
+                    self.currentX = self.rightSideRowStart
+                    self.currentY = self.BLOCK_Y_SPACER
+                    self.remainingRowHeight = self.rowHeight
+                    self.currentSide = 'R'
+                    topLeft = (self.currentX, self.currentY)
+                    self.blockUpdateHorizontalPosition(width)
+                    return topLeft
+    '''
+    update currentX and remainingRowWidth  after the addition of a new block
+    '''
+    def blockUpdateHorizontalPosition(self, width):
+        self.currentX = self.currentX + width + self.BLOCK_X_SPACER
+        self.remainingRowWidth = self.remainingRowWidth - width - self.BLOCK_X_SPACER
+        return None
+    '''
+    update currentY and remainingRowHeight after the additoon of a new block in a new row
+    '''
+    def blockUpdateVerticalPosition(self, height):
+        self.currentY = self.currentY + height + self.BLOCK_Y_SPACER
+        self.remainingRowHeight = self.remainingRowHeight - height - self.BLOCK_Y_SPACER
+        return None
     
 class House(object):
     name = ''
@@ -350,7 +401,6 @@ def main():
     module4.addClass(class5)
     module5.addClass(class1)
     module5.addClass(class4)
-    module5.addClass(class6)
     
     package2.addModule(module3)
     package2.addModule(module4)
@@ -358,6 +408,12 @@ def main():
     
     #Package3:
     module6 = Module('Module6')
+    module7 = Module('Module7')
+    module8 = Module('Module8')
+    module9 = Module('Module9')
+    module10 = Module('Module10')
+    module11 = Module('Module11')
+    module12 = Module('Module12')
     
     module6.addClass(class3)
     module6.addClass(class7)
@@ -367,8 +423,40 @@ def main():
     module6.addClass(class4)
     module6.addClass(class6)
     
+    module7.addClass(class1)
+    module7.addClass(class4)
+    module7.addClass(class2)
+    module7.addClass(class5)
+    
+    module8.addClass(class5)
+    module8.addClass(class3)
+    module8.addClass(class6)
+    module8.addClass(class1)
+    
+    module9.addClass(class6)
+    module9.addClass(class1)
+    module9.addClass(class4)
+    
+    module10.addClass(class2)
+    module10.addClass(class3)
+    module10.addClass(class6)
+    module10.addClass(class5)
+    module10.addClass(class1)
+    
+    module11.addClass(class2)
+    module11.addClass(class5)
+    
+    module12.addClass(class4)
+    module12.addClass(class7)
+    module12.addClass(class3)
+    
     package3.addModule(module6)
-
+    package3.addModule(module7)
+    package3.addModule(module8)
+    package3.addModule(module9)
+    package3.addModule(module10)
+    package3.addModule(module11)
+    package3.addModule(module12)
 
     packagesOne = []
     packagesOne.append(package1)
