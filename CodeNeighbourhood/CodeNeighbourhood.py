@@ -11,7 +11,7 @@ from Visualizer.Renderer import *
 from Visualizer.XMLParser import *
 
 
-def directoryCrawl():
+def main():
     XMLString = DirectoryCrawler.directoryCrawl('pyntaCode')
     #print XMLString
     
@@ -23,4 +23,4 @@ def directoryCrawl():
     return None
 
 if __name__ == '__main__':
-    directoryCrawl()
+    main()

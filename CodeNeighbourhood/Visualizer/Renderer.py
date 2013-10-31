@@ -6,6 +6,7 @@ Created on Oct 23, 2013
 from CustomTypes import *
 import sys
 import pygame
+from random import randint  #temp for iteration 1 - remove after
 
 
 
@@ -138,13 +139,17 @@ class Renderer(object):
         classes = module.getClasses()
         #Determine the width needed to represent a block
         totalWidth = 0
-        width = ""
+        width = 0
         for c in classes:
+            '''
             totalWidth = totalWidth + self.HOUSE_X_SPACER
             width = int(c.getWidth())
-            #width = c.getWidth()
             totalWidth = totalWidth + width
-        
+            '''
+            #print type (c.getWidth())
+            width = randint(30, 150)
+            totalWidth = totalWidth + width
+            
         lastHouseWidth = width
         halfScreen = self.rowWidth
         tempTotalWidth = totalWidth
