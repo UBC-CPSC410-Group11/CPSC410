@@ -198,3 +198,4 @@ class ModuleParser():
                 newMethod = Tree.SubElement(self.moduleRoot, 'FreeMethod', {'name' : methodName})
                 i = self.parseFreeMethod(newMethod, i+1, 4)
                 
+        

@@ -12,14 +12,14 @@ from Visualizer.XMLParser import *
 
 
 def directoryCrawl():
-    DirectoryCrawler.directoryCrawl('pyntaCode')
+    XMLString = DirectoryCrawler.directoryCrawl('pyntaCode')
     #print XMLString
     
-    #XMLParser1 = XMLParser(XMLString)
+    XMLParser1 = XMLParser(XMLString)
     
-    #packages = XMLParser1.getPackages()
-    #renderer1 = Renderer(packages)
-    #renderer1.renderNeighbourhood()
+    packages = XMLParser1.getPackages()
+    renderer1 = Renderer(packages)
+    renderer1.renderNeighbourhood()
     return None
 
 if __name__ == '__main__':

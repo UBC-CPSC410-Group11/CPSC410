@@ -138,10 +138,11 @@ class Renderer(object):
         classes = module.getClasses()
         #Determine the width needed to represent a block
         totalWidth = 0
-        width = 0
+        width = ""
         for c in classes:
             totalWidth = totalWidth + self.HOUSE_X_SPACER
             width = int(c.getWidth())
+            #width = c.getWidth()
             totalWidth = totalWidth + width
         
         lastHouseWidth = width
@@ -364,7 +365,7 @@ class Block(object):
     def getColour(self):
         return self.colour
 
-
+'''
 #FOR TESTTING
 def main():
     
@@ -485,5 +486,5 @@ if __name__ == "__main__":
         main()
     
         
-        
+   '''     
 
