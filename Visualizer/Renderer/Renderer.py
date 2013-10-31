@@ -44,19 +44,14 @@ class Renderer(object):
     totalRowHeight = 0
     remainingRowHeight = 0
     
-    def _init_(self, packages):
+    def __init__(self, packages):
         self.packages = packages
-
-        
-    def setPackages(self, packages):
-        self.packages = packages
-
         
     '''
     Call this method to generate the output image
     '''
     def renderNeighbourhood(self):
-        #self.rowWidth = (self.MAX_WIDTH / 2) - (1.5 * self.BLOCK_X_SPACER) - Uncomment to change to half-screen spacing
+        #self.rowWidth = (self.MAX_WIDTH / 2) - (1.5 * self.BLOCK_X_SPACER) #- Uncomment to change to half-screen spacing
         self.rowWidth = self.MAX_WIDTH - 2 * self.BLOCK_X_SPACER
         self.remainingRowWidth = self.rowWidth
         self.rowHeight = (self.MAX_HEIGHT - 2 * self.BLOCK_Y_SPACER)
@@ -368,7 +363,7 @@ class Block(object):
     def getColour(self):
         return self.colour
 
-
+'''
 #FOR TESTTING
 def main():
     
@@ -478,8 +473,7 @@ def main():
     packagesOne.append(package2)
     packagesOne.append(package3)
     
-    renderer = Renderer()
-    renderer.setPackages(packagesOne)
+    renderer = Renderer(packagesOne)
     
     renderer.renderNeighbourhood()
     return None
@@ -488,7 +482,7 @@ def main():
         
 if __name__ == "__main__":
         main()
-  
+    '''
         
         
 
