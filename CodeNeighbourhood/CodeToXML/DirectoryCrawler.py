@@ -8,7 +8,7 @@ import xml.etree.cElementTree as Tree
 import xml.dom.minidom as minidom
 import sys
 import os
-from ModuleParser import ModuleParser
+import ModuleParser
 
 root = Tree.Element("CodeBase")
 
@@ -32,7 +32,7 @@ def crawlPackage(dirPath, packageName):
 
 
 ''' open xml file, open code directory, for every package call crawlPackage() '''             
-def main(argv):
+def directoryCrawl(argv):
     
     for path, dirs, _ in os.walk(argv):
         for d in dirs:
@@ -43,6 +43,7 @@ def main(argv):
     f = open(xmlName, 'w')
     f.write(xmlstring)
     f.close()
+    return xmlstring
     
-if __name__ == '__main__':
-    main(sys.argv[1])
+#if __name__ == '__main__':
+#    directoryCrawl(sys.argv[1])

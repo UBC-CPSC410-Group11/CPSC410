@@ -3,7 +3,7 @@ Created on Oct 23, 2013
 
 @author: Mike
 '''
-from Parser.CustomTypes import *
+from CustomTypes import *
 import sys
 import pygame
 
@@ -138,9 +138,10 @@ class Renderer(object):
         classes = module.getClasses()
         #Determine the width needed to represent a block
         totalWidth = 0
+        width = 0
         for c in classes:
             totalWidth = totalWidth + self.HOUSE_X_SPACER
-            width = c.getWidth()
+            width = int(c.getWidth())
             totalWidth = totalWidth + width
         
         lastHouseWidth = width

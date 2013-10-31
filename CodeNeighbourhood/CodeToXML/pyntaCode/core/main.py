@@ -15,7 +15,7 @@ def get_main_app():
     return import_module('application').Application()
 
 
-def main():
+def directoryCrawl():
     params = argument_parser.parse_args()
     setup_settings(params.settings)
     # @todo: handle host, port and app in params
@@ -23,4 +23,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    directoryCrawl()
