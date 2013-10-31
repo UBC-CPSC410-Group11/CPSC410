@@ -1,0 +1,7 @@
+<?xml version="1.0" ?>
+<CodeBase>
+	<Package name="c">
+		<Module name="d.py"/>
+		<Module name="e.java"/>
+	</Package>
+</CodeBase>
