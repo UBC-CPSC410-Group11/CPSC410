@@ -364,7 +364,7 @@ class Block(object):
     def getColour(self):
         return self.colour
 
-'''
+
 #FOR TESTTING
 def main():
     
@@ -483,7 +483,7 @@ def main():
         
 if __name__ == "__main__":
         main()
-    '''
+    
         
         
 

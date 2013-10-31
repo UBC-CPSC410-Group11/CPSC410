@@ -22,14 +22,23 @@ class ModuleParser():
     
     ''' Returns True if line is empty or False if line is not empty '''
     def isEmpty(self, i):
-        if(len(self.code[i]) <= 1):
+        line = self.code[i].strip()
+        if((len(line) < 1) or (self.isCommentLine(i))):
             return True
-        for j in range(0, len(self.code[i])):
-            if(self.code[i][j] != ' ' or self.code[i][j] != '\n'):
-                return False
-        return True
-        
+        return False
     
+    ''' Returns True if given line is a comment '''
+    def isCommentLine(self, i):
+        line = self.code[i].strip()
+        commentSignCount = 0
+        if (line.startswith('#')) or (line.startswith('\'\'\'')):
+            return True
+        for j in range(0, i):
+            commentSignCount = commentSignCount + self.code[j].count('\'\'\'')
+        if commentSignCount % 2 == 0:
+            return False
+        else:
+            return True
     
     ''' Returns if the indentation of the current line to be parsed is still as deep
         as the current depth we are on '''
@@ -56,7 +65,15 @@ class ModuleParser():
         
     ''' Count lines from self.code between indices [begin, end[ '''
     def countLines(self, begin, end):
-        return 11
+        count = 0; 
+        i = begin
+       
+        while (i < end):
+            if (not self.isEmpty(i)):
+                count = count + 1
+            i = i + 1
+               
+        return count
     
     
     
@@ -78,27 +95,69 @@ class ModuleParser():
         return 10   
     
     
+    ''' Get width given class '''
+    def getClassWidth(self, begin, end):
+        return 5
+    
+    ''' count the number of parameters in a method given its signature '''
+    def countParameters(self, methodSignature):
+        return 1
     
     ''' Iterate through lines to find end of method and then parse it '''
     def parseMethod(self, methodRoot, begin, indentation):
-        pass
-     
+        i = 1   
+        while (self.indentationLevel(begin + i, indentation)):
+            i += 1
+            if (begin+i >= self.lineCounter):
+                break
+        end = begin + i
+        methodSignature = self.code[begin]
+        
+        parameters = self.countParameters(methodSignature)
+        lines = self.countLines(begin, end)
+        score = self.calculateScore(begin, end)
+        
+        methodRoot.set('lines', str(lines))
+        methodRoot.set('score', str(score))
+        methodRoot.set('parameters', str(parameters))
     
+    ''' Iterate through class to write appropriate outcall tags to xml
+        outcall are calls to other classes '''
+    def parseClassOutCalls(self, classRoot, begin, end):
+        outCallRoot = Tree.SubElement(classRoot, 'OutCall')
+        Tree.SubElement(outCallRoot, 'Class', {'name' : 'class name'})
     
     ''' Iterate through lines to find end of class and then parse it '''
     def parseClass(self, classRoot, begin, indentation):
-        i = 0
+        i = 1
         while (self.indentationLevel(begin + i, indentation)):
             i += 1
             if(begin+i >= self.lineCounter):
                 break
         end = begin + i
         
+        for i in range(begin, end):
+            currLine = self.code[i].strip()
+            words = currLine.split()
+            if (currLine.startswith('def') and (len(words) > 2)):
+                methodName = ''
+                for j in range(0, len(words[1])):
+                    if words[1][j] == '(':
+                        break
+                    methodName += words[1][j]                    
+                newMethod = Tree.SubElement(classRoot, 'Method', {'name' : methodName})
+                self.parseMethod(newMethod, i, 8)
+        
+        self.parseClassOutCalls(classRoot, begin, end)
+        
         lines = self.countLines(begin, end)
         score = self.calculateScore(begin, end)
+        width = self.getClassWidth(begin, end)
         
         classRoot.set('lines', str(lines))
         classRoot.set('score', str(score))
+        classRoot.set('width', str(width))
+        
         
         # TODO:   iterate from begin to end again (I know, probably not really efficient, but easier)
         #         and look for methods or nested classes, then call parseMethod() or parseClass() again
@@ -139,4 +198,3 @@ class ModuleParser():
                 newMethod = Tree.SubElement(self.moduleRoot, 'FreeMethod', {'name' : methodName})
                 i = self.parseFreeMethod(newMethod, i+1, 4)
                 
-        

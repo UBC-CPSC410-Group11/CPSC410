@@ -43,7 +43,7 @@ def directoryCrawl(argv):
     f = open(xmlName, 'w')
     f.write(xmlstring)
     f.close()
-    return xmlstring
+    #return xmlstring
     
 #if __name__ == '__main__':
 #    directoryCrawl(sys.argv[1])

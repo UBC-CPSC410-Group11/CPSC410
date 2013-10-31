@@ -3,7 +3,7 @@ Created on 2013-10-22
 
 @author: jonrl33
 '''
-from xml.dom.minidom import parse
+from xml.dom.minidom import parse, parseString
 from CustomTypes import Package, Module, Class, Method
 
 class XMLParser(object):
@@ -13,7 +13,7 @@ class XMLParser(object):
         self.parseFile(in_File)
             
     def parseFile(self, in_File):
-        doc = parse(in_File)
+        doc = parseString(in_File)
         if doc.hasChildNodes():
             for pkgNode in doc.getElementsByTagName("Package"):
                 pkg = Package(pkgNode.getAttribute("name"))
