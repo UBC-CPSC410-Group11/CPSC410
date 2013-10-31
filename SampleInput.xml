@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<Codebase>
+<Package name="TempPackage">
+	<Module name="TempMod1">
+		<Class name="Class1" score="10" width="5" lines="10">
+			<Method name="Class1Method" score="10" parameters="2" lines="10"></Method>
+			<OutCall>
+				<ClassName name="Class2"></ClassName>
+			</OutCall>
+		</Class>
+		<FreeMethod name="FreeMethod"></FreeMethod>
+		<Class name="Class2" score="7" width="3" lines="35">
+			<Method name="Class2Method1" score="3" parameters="7" lines="3"></Method>
+			<Method name="Class2Method2" score="9" parameters="2" lines="32"></Method>
+			<OutCall>
+				<ClassName name="Class2"></ClassName>
+			</OutCall>
+		</Class>		
+
+	</Module>
+	<Module name="TempMod2">
+		<Class name="Class3" score="4" width="8" lines="100">
+			<Method name="Class3Method1" score="3" parameters="4" lines="18"></Method>
+			<Method name="Class3Method2" score="6" parameters="2" lines="82"></Method>
+		</Class>
+	</Module>
+</Package>
+</Codebase>
