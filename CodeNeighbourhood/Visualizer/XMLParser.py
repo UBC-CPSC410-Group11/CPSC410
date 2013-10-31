@@ -28,17 +28,19 @@ class XMLParser(object):
                         if modNode.hasChildNodes():
                             
                             for classNode in modNode.getElementsByTagName("Class"):
-                                cl = Class(classNode.getAttribute("name"), 
-                                           classNode.getAttribute("score"),
-                                           classNode.getAttribute("width"),
-                                           classNode.getAttribute("lines"))
+                                className = classNode.getAttribute("name")
+                                classScore = classNode.getAttribute("score")
+                                classWidth = classNode.getAttribute("width")
+                                classLines = classNode.getAttribute("lines")
+                                cl = Class(className, classScore, classWidth, classLines)
                                 if (classNode.hasChildNodes()):
                                     
                                     for methodNode in classNode.getElementsByTagName("Method"):
-                                        meth = Method(methodNode.getAttribute("name"),
-                                                      methodNode.getAttribute("score"),
-                                                      methodNode.getAttribute("parameters"),
-                                                      methodNode.getAttribute("lines"))
+                                        mName = methodNode.getAttribute("name")
+                                        mScore = methodNode.getAttribute("score")
+                                        mParam = methodNode.getAttribute("parameters")
+                                        mLines = methodNode.getAttribute("lines")
+                                        meth = Method(mName, mScore, mParam, mLines)
                                         cl.addMethod(meth)
                                     
                                     for methodNode in classNode.getElementsByTagName("Method"):

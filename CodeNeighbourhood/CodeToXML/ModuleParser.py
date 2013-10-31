@@ -125,7 +125,7 @@ class ModuleParser():
         outcall are calls to other classes '''
     def parseClassOutCalls(self, classRoot, begin, end):
         outCallRoot = Tree.SubElement(classRoot, 'OutCall')
-        Tree.SubElement(outCallRoot, 'Class', {'name' : 'class name'})
+        Tree.SubElement(outCallRoot, 'ClassName', {'name' : 'class name'})
     
     ''' Iterate through lines to find end of class and then parse it '''
     def parseClass(self, classRoot, begin, indentation):
