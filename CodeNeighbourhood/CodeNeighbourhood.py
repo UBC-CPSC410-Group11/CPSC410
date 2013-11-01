@@ -3,12 +3,10 @@ Created on Oct 31, 2013
 
 @author: Mike and Jon
 '''
-import sys
 from CodeToXML import DirectoryCrawler
 
-from Visualizer.CustomTypes import *
-from Visualizer.Renderer import *
-from Visualizer.XMLParser import *
+from Visualizer.Renderer import Renderer
+from Visualizer.XMLParser import XMLParser
 
 
 def main():

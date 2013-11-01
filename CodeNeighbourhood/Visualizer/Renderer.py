@@ -6,9 +6,6 @@ Created on Oct 23, 2013
 from CustomTypes import *
 import sys
 import pygame
-from random import randint  #temp for iteration 1 - remove after
-
-
 
 class Renderer(object):
     MAX_WIDTH = 1200
@@ -19,15 +16,14 @@ class Renderer(object):
     BLOCK_Y_SPACER = 20 #Space between the edge of the picture and the top or botom of a block, or between blocks
     BLOCK_HEIGHT = 100
     MIN_BLOCK_WIDTH = 100
+    WIDTH_MULTIPLIER = 10 #For first iteration only - once "width" becomes more accurate, not needed
     
     BACKGROUND_COLOUR = (169,167,146)
     GREEN_BLOCK_COLOUR = (141,153,109)
     RED_HOUSE_COLOUR = (256,0,0)
     
     screen = {}
-    
     packages = []
-    
     houses = []
     windows = []
     tents = []
@@ -77,9 +73,6 @@ class Renderer(object):
         
         for package in self.packages:
             self.buildPackage(package)
-        '''
-        self.buildPackage(self.packages[0])
-        '''
         return None
 
     def buildPackage(self, package):
@@ -87,7 +80,6 @@ class Renderer(object):
         for module in package.modules:
             self.buildBlock(module)
         return None
-
 
     def buildBlock (self, module):
         #Modules are explicitly represented in the output as blocks (of 'grass') which surround the houses(classes) of that module
@@ -114,21 +106,7 @@ class Renderer(object):
             
             i = i + 1
             #FOR TESTING - REMOVE LATER
-            '''
-            print '***************'
-            print block.getTopLeft()
-            print block.getWidth()
-            print block.getLength()
-            prnt1 = ('row width', self.rowWidth)
-            print prnt1
-            prnt2 = ('remaining row width', self.remainingRowWidth)
-            print prnt2
-            prnt3 = ('row height', self.rowHeight)
-            print prnt3
-            prnt4 = ('remaining row height', self.remainingRowHeight)
-            print prnt4
-            print '****   ********'
-            '''
+
         return None
     '''
     Return a list of tuples (x,y,c) which are the width, height of the rectangles needed to represent a block, and c
@@ -141,22 +119,19 @@ class Renderer(object):
         totalWidth = 0
         width = 0
         for c in classes:
-            '''
             totalWidth = totalWidth + self.HOUSE_X_SPACER
+
             width = int(c.getWidth())
             totalWidth = totalWidth + width
-            '''
-            #print type (c.getWidth())
-            width = randint(30, 150)
-            totalWidth = totalWidth + width
+        
+        totalWidth = totalWidth * self.WIDTH_MULTIPLIER
             
         lastHouseWidth = width
         halfScreen = self.rowWidth
         tempTotalWidth = totalWidth
         
-        
         #create n number of full row rects
-        
+    
         while (tempTotalWidth > halfScreen):
             tempTotalWidth = tempTotalWidth - halfScreen
             rect = (halfScreen, self.BLOCK_HEIGHT, 1)
@@ -174,8 +149,7 @@ class Renderer(object):
             dimensions.append(rect)
         return dimensions
     
-    
-        
+
     def buildHouse(self, theClass):
         #TDOO Implement
         return None
@@ -184,17 +158,25 @@ class Renderer(object):
         #TODO Implement
         return None
     
+    '''
+    Initialize the output window
+    '''
     def initDrawing(self):
         pygame.init()
         self.screen = pygame.display.set_mode((self.MAX_WIDTH, self.MAX_HEIGHT))
         self.screen.fill(self.BACKGROUND_COLOUR)
         return None
     
+    '''
+    Render the Blocks
+    '''
     def drawBlocks(self):
         for block in self.blocks:
             self.drawBlock(block)
         return None
-    
+    '''
+    Render a Block
+    '''
     def drawBlock(self, block):
         topLeft = block.getTopLeft()
         left = topLeft[0]
@@ -363,133 +345,12 @@ class Block(object):
         
     def getTopLeft(self):
         return self.topLeft
+    
     def getLength(self):
         return self.length
+    
     def getWidth(self):
         return self.width
+    
     def getColour(self):
         return self.colour
-
-'''
-#FOR TESTTING
-def main():
-    
-    
-    #make some packages
-    package1 = Package('P1')
-    package2 = Package('P2')
-    package3 = Package('P3')
-    
-    #make some classes:
-    class1 = Class('Class1', 10, 60, 8)
-    class2 = Class('Class2', 10, 120, 9)
-    class3 = Class('Class3', 10, 45, 7)
-    class4 = Class('Class4', 10, 75, 8)
-    class5 = Class('Class5', 10, 90, 4)
-    class6 = Class('Class6', 10, 60, 6)
-    class7 = Class('Class7', 10, 70, 5)
-    
-    #No methods in this iteration
-    
-    #Package1:
-    module1 = Module('Module1')
-    module2 = Module('Module2')
-
-    module1.addClass(class5)
-    module1.addClass(class3)
-    module2.addClass(class1)
-    module2.addClass(class4)
-    module2.addClass(class2)
-    
-    package1.addModule(module1)
-    package1.addModule(module2)
-    
-    #Package2:
-    module3 = Module('Module3')
-    module4 = Module('Module4')
-    module5 = Module('Module5')
-    
-    module3.addClass(class2)
-    module3.addClass(class7)
-    module4.addClass(class5)
-    module5.addClass(class1)
-    module5.addClass(class4)
-    module5.addClass(class1)
-    
-    package2.addModule(module3)
-    package2.addModule(module4)
-    package2.addModule(module5)
-    
-    #Package3:
-    module6 = Module('Module6')
-    module7 = Module('Module7')
-    module8 = Module('Module8')
-    module9 = Module('Module9')
-    module10 = Module('Module10')
-    module11 = Module('Module11')
-    module12 = Module('Module12')
-    module13 = Module('Module13')
-    module14 = Module('Module14')
-    module15 = Module('Module15')
-    
-    module6.addClass(class3)
-    module6.addClass(class7)
-    module6.addClass(class2)
-    module6.addClass(class5)
-    module6.addClass(class1)
-    module6.addClass(class4)
-    module6.addClass(class6)
-    
-    module7.addClass(class1)
-    module7.addClass(class4)
-    module7.addClass(class2)
-    module7.addClass(class5)
-    
-    module8.addClass(class5)
-    module8.addClass(class3)
-    module8.addClass(class6)
-    module8.addClass(class1)
-    
-    module9.addClass(class6)
-    module9.addClass(class1)
-    module9.addClass(class4)
-    
-    module10.addClass(class2)
-    module10.addClass(class3)
-    module10.addClass(class6)
-    module10.addClass(class5)
-    module10.addClass(class1)
-    
-    module11.addClass(class2)
-    module11.addClass(class5)
-    
-    module12.addClass(class4)
-    module12.addClass(class7)
-    module12.addClass(class3)
-    
-    package3.addModule(module6)
-    package3.addModule(module7)
-    package3.addModule(module8)
-    package3.addModule(module9)
-    package3.addModule(module10)
-    package3.addModule(module11)
-    package3.addModule(module12)
-
-    packagesOne = []
-    packagesOne.append(package1)
-    packagesOne.append(package2)
-    packagesOne.append(package3)
-    
-    renderer = Renderer(packagesOne)
-    
-    renderer.renderNeighbourhood()
-    return None
-                
-        
-        
-if __name__ == "__main__":
-        main()
-    
-        
-   '''     
-
