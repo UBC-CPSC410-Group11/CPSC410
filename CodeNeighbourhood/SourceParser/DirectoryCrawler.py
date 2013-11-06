@@ -44,7 +44,7 @@ def directoryCrawl(argv):
     f.close()
     return xmlstring
     
-''' if __name__ == '__main__':
+'''if __name__ == '__main__':
     directoryCrawl(sys.argv[1])'''
     
 #directoryCrawl('pyntaCode')

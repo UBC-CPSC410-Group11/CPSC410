@@ -69,7 +69,7 @@ class ModuleParser():
         i = begin
        
         while (i < end):
-            if (not self.isEmpty(i)):
+            if (not self.isEmpty(i) or self.isCommentLine(i)):
                 count = count + 1
             i = i + 1
                
@@ -79,29 +79,28 @@ class ModuleParser():
     
     ''' Count comments from self.code between indices [begin, end[ '''
     def countComments(self, begin, end):
-        return 12
+        return 2
     
-    
-    
-    ''' Find calls to other classes in a method between indices [begin, end[ '''
-    def findOutcalls(self, begin, end): 
-        pass
-    
-    
-    
-    ''' Calculate score of method or class between indices [begin, end[ -
-        (probably two different methods needed) '''
-    def calculateScore(self, begin, end):
-        return 10   
     
     
     ''' Get width given class '''
     def getClassWidth(self, begin, end):
         return 5
     
+    
+    
     ''' count the number of parameters in a method given its signature '''
     def countParameters(self, methodSignature):
-        return 1
+        return methodSignature.count(',') + 1
+    
+    
+    ''' Iterate through class to write appropriate outcall tags to xml
+        outcall are calls to other classes '''
+    def parseClassOutCalls(self, classRoot, begin, end):
+        outCallRoot = Tree.SubElement(classRoot, 'OutCall')
+        Tree.SubElement(outCallRoot, 'ClassName', {'name' : 'class name'})
+    
+    
     
     ''' Iterate through lines to find end of method and then parse it '''
     def parseMethod(self, methodRoot, begin, indentation):
@@ -115,17 +114,10 @@ class ModuleParser():
         
         parameters = self.countParameters(methodSignature)
         lines = self.countLines(begin, end)
-        score = self.calculateScore(begin, end)
         
         methodRoot.set('lines', str(lines))
-        methodRoot.set('score', str(score))
         methodRoot.set('parameters', str(parameters))
     
-    ''' Iterate through class to write appropriate outcall tags to xml
-        outcall are calls to other classes '''
-    def parseClassOutCalls(self, classRoot, begin, end):
-        outCallRoot = Tree.SubElement(classRoot, 'OutCall')
-        Tree.SubElement(outCallRoot, 'ClassName', {'name' : 'class name'})
     
     ''' Iterate through lines to find end of class and then parse it '''
     def parseClass(self, classRoot, begin, indentation):
@@ -151,11 +143,9 @@ class ModuleParser():
         self.parseClassOutCalls(classRoot, begin, end)
         
         lines = self.countLines(begin, end)
-        score = self.calculateScore(begin, end)
         width = self.getClassWidth(begin, end)
         
         classRoot.set('lines', str(lines))
-        classRoot.set('score', str(score))
         classRoot.set('width', str(width))
         
         
