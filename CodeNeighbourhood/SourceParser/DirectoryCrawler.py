@@ -6,7 +6,7 @@ Created on 21.10.2013
 
 import xml.etree.cElementTree as Tree
 import xml.dom.minidom as minidom
-import os
+import sys, os
 from ModuleParser import ModuleParser
 
 root = Tree.Element("CodeBase")
@@ -44,7 +44,7 @@ def directoryCrawl(argv):
     f.close()
     return xmlstring
     
-'''if __name__ == '__main__':
-    directoryCrawl(sys.argv[1])'''
+if __name__ == '__main__':
+    directoryCrawl(sys.argv[1])
     
 #directoryCrawl('pyntaCode')

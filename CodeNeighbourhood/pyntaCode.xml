@@ -9,13 +9,16 @@
 				</OutCall>
 			</Class>
 			<Class lines="85" name="PyntaApp" width="5">
-				<Method lines="3" name="__init__" parameters="3"/>
-				<Method lines="25" name="__call__" parameters="3"/>
-				<Method lines="29" name="dispatch" parameters="2"/>
-				<Method lines="2" name="get_context" parameters="2"/>
-				<Method lines="2" name="get" parameters="2"/>
-				<Method lines="2" name="post" parameters="2"/>
-				<Method lines="2" name="head" parameters="2"/>
+				<Method comments="0" documentation="0" lines="3" name="__init__" parameters="3"/>
+				<Method comments="0" documentation="0" lines="25" name="__call__" parameters="3"/>
+				<Method comments="10" documentation="1" lines="29" name="dispatch" parameters="2"/>
+				<Method comments="0" documentation="0" lines="3" name="init_session" parameters="1"/>
+				<Method comments="0" documentation="0" lines="6" name="save_session" parameters="1"/>
+				<Method comments="0" documentation="0" lines="6" name="app_by_url" parameters="1"/>
+				<Method comments="0" documentation="0" lines="2" name="get_context" parameters="2"/>
+				<Method comments="0" documentation="0" lines="2" name="get" parameters="2"/>
+				<Method comments="0" documentation="0" lines="2" name="post" parameters="2"/>
+				<Method comments="0" documentation="0" lines="2" name="head" parameters="2"/>
 				<OutCall>
 					<ClassName name="class name"/>
 				</OutCall>
@@ -26,13 +29,16 @@
 		</Module>
 		<Module name="generic.py">
 			<Class lines="50" name="CRUDApp" width="5">
-				<Method lines="4" name="create_object" parameters="2"/>
-				<Method lines="2" name="get_object" parameters="2"/>
-				<Method lines="3" name="update_object" parameters="3"/>
-				<Method lines="2" name="delete_object" parameters="2"/>
-				<Method lines="4" name="do_detail" parameters="2"/>
-				<Method lines="4" name="do_update" parameters="2"/>
-				<Method lines="3" name="do_delete" parameters="2"/>
+				<Method comments="0" documentation="0" lines="4" name="create_object" parameters="2"/>
+				<Method comments="0" documentation="0" lines="2" name="get_dataset" parameters="1"/>
+				<Method comments="0" documentation="0" lines="2" name="get_object" parameters="2"/>
+				<Method comments="0" documentation="0" lines="3" name="update_object" parameters="3"/>
+				<Method comments="0" documentation="0" lines="2" name="delete_object" parameters="2"/>
+				<Method comments="0" documentation="0" lines="4" name="do_create" parameters="1"/>
+				<Method comments="0" documentation="0" lines="6" name="do_list" parameters="1"/>
+				<Method comments="0" documentation="0" lines="4" name="do_detail" parameters="2"/>
+				<Method comments="0" documentation="0" lines="4" name="do_update" parameters="2"/>
+				<Method comments="0" documentation="0" lines="3" name="do_delete" parameters="2"/>
 				<OutCall>
 					<ClassName name="class name"/>
 				</OutCall>
@@ -40,8 +46,8 @@
 		</Module>
 		<Module name="simple.py">
 			<Class lines="8" name="Static" width="5">
-				<Method lines="2" name="get" parameters="2"/>
-				<Method lines="2" name="call" parameters="3"/>
+				<Method comments="0" documentation="0" lines="2" name="get" parameters="2"/>
+				<Method comments="0" documentation="0" lines="2" name="call" parameters="3"/>
 				<OutCall>
 					<ClassName name="class name"/>
 				</OutCall>
@@ -56,16 +62,17 @@
 				</OutCall>
 			</Class>
 			<Class lines="2" name="UnconfiguredSettings" width="5">
-				<Method lines="2" name="__getattribute__" parameters="2"/>
+				<Method comments="0" documentation="0" lines="2" name="__getattribute__" parameters="2"/>
 				<OutCall>
 					<ClassName name="class name"/>
 				</OutCall>
 			</Class>
 			<Class lines="23" name="Settings" width="5">
-				<Method lines="4" name="__init__" parameters="2"/>
-				<Method lines="2" name="__getattr__" parameters="2"/>
-				<Method lines="8" name="__setattr__" parameters="3"/>
-				<Method lines="2" name="__delattr__" parameters="2"/>
+				<Method comments="0" documentation="0" lines="4" name="__init__" parameters="2"/>
+				<Method comments="0" documentation="0" lines="2" name="__bool__" parameters="1"/>
+				<Method comments="0" documentation="0" lines="2" name="__getattr__" parameters="2"/>
+				<Method comments="0" documentation="0" lines="8" name="__setattr__" parameters="3"/>
+				<Method comments="0" documentation="0" lines="2" name="__delattr__" parameters="2"/>
 				<OutCall>
 					<ClassName name="class name"/>
 				</OutCall>
@@ -75,13 +82,13 @@
 		<Module name="empty_settings.py"/>
 		<Module name="provider.py">
 			<Class lines="38" name="SettingsProvider" width="5">
-				<Method lines="32" name="__new__" parameters="4"/>
+				<Method comments="8" documentation="0" lines="32" name="__new__" parameters="4"/>
 				<OutCall>
 					<ClassName name="class name"/>
 				</OutCall>
 			</Class>
 			<Class lines="8" name="SettingsConsumer" width="5">
-				<Method lines="5" name="__init__" parameters="4"/>
+				<Method comments="0" documentation="0" lines="5" name="__init__" parameters="4"/>
 				<OutCall>
 					<ClassName name="class name"/>
 				</OutCall>
@@ -96,29 +103,32 @@
 		</Module>
 		<Module name="paginator.py">
 			<Class lines="12" name="_PageIterator" width="5">
-				<Method lines="3" name="__init__" parameters="3"/>
-				<Method lines="2" name="get_page" parameters="2"/>
-				<Method lines="5" name="__getitem__" parameters="2"/>
+				<Method comments="0" documentation="0" lines="3" name="__init__" parameters="3"/>
+				<Method comments="0" documentation="0" lines="2" name="get_page" parameters="2"/>
+				<Method comments="0" documentation="0" lines="5" name="__getitem__" parameters="2"/>
+				<Method comments="0" documentation="0" lines="2" name="__iter__" parameters="1"/>
 				<OutCall>
 					<ClassName name="class name"/>
 				</OutCall>
 			</Class>
 			<Class lines="10" name="_PageSequence" width="5">
-				<Method lines="5" name="__getitem__" parameters="2"/>
-				<Method lines="2" name="__contains__" parameters="2"/>
+				<Method comments="0" documentation="0" lines="5" name="__getitem__" parameters="2"/>
+				<Method comments="0" documentation="0" lines="3" name="__len__" parameters="1"/>
+				<Method comments="0" documentation="0" lines="2" name="__contains__" parameters="2"/>
 				<OutCall>
 					<ClassName name="class name"/>
 				</OutCall>
 			</Class>
 			<Class lines="9" name="Paginator" width="5">
-				<Method lines="9" name="__init__" parameters="3"/>
+				<Method comments="0" documentation="0" lines="9" name="__init__" parameters="3"/>
 				<OutCall>
 					<ClassName name="class name"/>
 				</OutCall>
 			</Class>
 			<Class lines="12" name="Page" width="5">
-				<Method lines="8" name="__init__" parameters="5"/>
-				<Method lines="2" name="__getitem__" parameters="2"/>
+				<Method comments="0" documentation="0" lines="8" name="__init__" parameters="5"/>
+				<Method comments="0" documentation="0" lines="2" name="__getitem__" parameters="2"/>
+				<Method comments="0" documentation="0" lines="2" name="__len__" parameters="1"/>
 				<OutCall>
 					<ClassName name="class name"/>
 				</OutCall>
@@ -129,26 +139,33 @@
 		</Module>
 		<Module name="session.py">
 			<Class lines="6" name="SessionBase" width="5">
-				<Method lines="5" name="__new__" parameters="4"/>
+				<Method comments="0" documentation="0" lines="5" name="__new__" parameters="4"/>
 				<OutCall>
 					<ClassName name="class name"/>
 				</OutCall>
 			</Class>
 			<Class lines="33" name="Session" width="5">
-				<Method lines="13" name="__init__" parameters="2"/>
-				<Method lines="2" name="__getitem__" parameters="2"/>
-				<Method lines="2" name="__setitem__" parameters="3"/>
-				<Method lines="2" name="__delitem__" parameters="2"/>
+				<Method comments="3" documentation="0" lines="13" name="__init__" parameters="2"/>
+				<Method comments="0" documentation="0" lines="2" name="__del__" parameters="1"/>
+				<Method comments="0" documentation="0" lines="3" name="load" parameters="1"/>
+				<Method comments="0" documentation="0" lines="5" name="save" parameters="1"/>
+				<Method comments="1" documentation="0" lines="4" name="delete" parameters="1"/>
+				<Method comments="0" documentation="0" lines="2" name="__getitem__" parameters="2"/>
+				<Method comments="0" documentation="0" lines="2" name="__setitem__" parameters="3"/>
+				<Method comments="0" documentation="0" lines="2" name="__delitem__" parameters="2"/>
 				<OutCall>
 					<ClassName name="class name"/>
 				</OutCall>
 			</Class>
 			<Class lines="23" name="LazySession" width="5">
-				<Method lines="2" name="__init__" parameters="2"/>
-				<Method lines="4" name="_accessed" parameters="4"/>
-				<Method lines="2" name="__getitem__" parameters="2"/>
-				<Method lines="2" name="__setitem__" parameters="3"/>
-				<Method lines="2" name="__delitem__" parameters="2"/>
+				<Method comments="0" documentation="0" lines="2" name="__init__" parameters="2"/>
+				<Method comments="0" documentation="0" lines="2" name="save" parameters="1"/>
+				<Method comments="0" documentation="0" lines="4" name="_accessed" parameters="4"/>
+				<Method comments="0" documentation="0" lines="2" name="load" parameters="1"/>
+				<Method comments="0" documentation="0" lines="2" name="delete" parameters="1"/>
+				<Method comments="0" documentation="0" lines="2" name="__getitem__" parameters="2"/>
+				<Method comments="0" documentation="0" lines="2" name="__setitem__" parameters="3"/>
+				<Method comments="0" documentation="0" lines="2" name="__delitem__" parameters="2"/>
 				<OutCall>
 					<ClassName name="class name"/>
 				</OutCall>
@@ -156,8 +173,10 @@
 		</Module>
 		<Module name="urls.py">
 			<Class lines="39" name="UrlMatch" width="5">
-				<Method lines="6" name="__init__" parameters="6"/>
-				<Method lines="27" name="match" parameters="3"/>
+				<Method comments="0" documentation="0" lines="6" name="__init__" parameters="6"/>
+				<Method comments="3" documentation="1" lines="27" name="match" parameters="3"/>
+				<Method comments="0" documentation="0" lines="2" name="app_url" parameters="1"/>
+				<Method comments="0" documentation="0" lines="2" name="params" parameters="1"/>
 				<OutCall>
 					<ClassName name="class name"/>
 				</OutCall>
@@ -169,23 +188,25 @@
 		<Module name="__init__.py"/>
 		<Module name="base.py">
 			<Class lines="47" name="Storage" width="5">
-				<Method lines="7" name="get" parameters="3"/>
-				<Method lines="6" name="put" parameters="4"/>
-				<Method lines="6" name="delete" parameters="3"/>
-				<Method lines="8" name="get_free_key" parameters="2"/>
-				<Method lines="6" name="get_dataset" parameters="2"/>
+				<Method comments="0" documentation="0" lines="2" name="settings_name" parameters="1"/>
+				<Method comments="0" documentation="0" lines="7" name="get" parameters="3"/>
+				<Method comments="0" documentation="0" lines="6" name="put" parameters="4"/>
+				<Method comments="0" documentation="0" lines="6" name="delete" parameters="3"/>
+				<Method comments="0" documentation="0" lines="8" name="get_free_key" parameters="2"/>
+				<Method comments="0" documentation="0" lines="6" name="get_dataset" parameters="2"/>
 				<OutCall>
 					<ClassName name="class name"/>
 				</OutCall>
 			</Class>
 			<Class lines="44" name="Anydbm" width="5">
-				<Method lines="13" name="__init__" parameters="3"/>
-				<Method lines="2" name="get" parameters="3"/>
-				<Method lines="2" name="put" parameters="4"/>
-				<Method lines="2" name="delete" parameters="3"/>
-				<Method lines="6" name="get_free_key" parameters="2"/>
-				<Method lines="3" name="get_dataset" parameters="2"/>
-				<Method lines="2" name="_get_object_key" parameters="3"/>
+				<Method comments="0" documentation="0" lines="13" name="__init__" parameters="3"/>
+				<Method comments="0" documentation="0" lines="8" name="__del__" parameters="1"/>
+				<Method comments="0" documentation="0" lines="2" name="get" parameters="3"/>
+				<Method comments="0" documentation="0" lines="2" name="put" parameters="4"/>
+				<Method comments="0" documentation="0" lines="2" name="delete" parameters="3"/>
+				<Method comments="0" documentation="0" lines="6" name="get_free_key" parameters="2"/>
+				<Method comments="0" documentation="0" lines="3" name="get_dataset" parameters="2"/>
+				<Method comments="0" documentation="0" lines="2" name="_get_object_key" parameters="3"/>
 				<OutCall>
 					<ClassName name="class name"/>
 				</OutCall>
@@ -193,12 +214,13 @@
 		</Module>
 		<Module name="mongodb.py">
 			<Class lines="47" name="Mongodb" width="5">
-				<Method lines="9" name="__init__" parameters="3"/>
-				<Method lines="11" name="get" parameters="3"/>
-				<Method lines="9" name="put" parameters="4"/>
-				<Method lines="2" name="delete" parameters="3"/>
-				<Method lines="2" name="get_free_key" parameters="2"/>
-				<Method lines="2" name="get_dataset" parameters="2"/>
+				<Method comments="0" documentation="0" lines="9" name="__init__" parameters="3"/>
+				<Method comments="0" documentation="0" lines="3" name="__del__" parameters="1"/>
+				<Method comments="0" documentation="0" lines="11" name="get" parameters="3"/>
+				<Method comments="0" documentation="0" lines="9" name="put" parameters="4"/>
+				<Method comments="0" documentation="0" lines="2" name="delete" parameters="3"/>
+				<Method comments="0" documentation="0" lines="2" name="get_free_key" parameters="2"/>
+				<Method comments="0" documentation="0" lines="2" name="get_dataset" parameters="2"/>
 				<OutCall>
 					<ClassName name="class name"/>
 				</OutCall>
@@ -211,13 +233,14 @@
 				</OutCall>
 			</Class>
 			<Class lines="65" name="Mongoengine" width="5">
-				<Method lines="10" name="__init__" parameters="3"/>
-				<Method lines="8" name="get" parameters="3"/>
-				<Method lines="14" name="put" parameters="4"/>
-				<Method lines="6" name="delete" parameters="3"/>
-				<Method lines="2" name="get_free_key" parameters="2"/>
-				<Method lines="7" name="get_dataset" parameters="2"/>
-				<Method lines="7" name="_get_document" parameters="2"/>
+				<Method comments="0" documentation="0" lines="10" name="__init__" parameters="3"/>
+				<Method comments="0" documentation="0" lines="3" name="__del__" parameters="1"/>
+				<Method comments="0" documentation="0" lines="8" name="get" parameters="3"/>
+				<Method comments="0" documentation="0" lines="14" name="put" parameters="4"/>
+				<Method comments="0" documentation="0" lines="6" name="delete" parameters="3"/>
+				<Method comments="0" documentation="0" lines="2" name="get_free_key" parameters="2"/>
+				<Method comments="0" documentation="0" lines="7" name="get_dataset" parameters="2"/>
+				<Method comments="0" documentation="0" lines="7" name="_get_document" parameters="2"/>
 				<OutCall>
 					<ClassName name="class name"/>
 				</OutCall>
@@ -228,13 +251,14 @@
 		<Module name="__init__.py"/>
 		<Module name="base.py">
 			<Class lines="9" name="Renderer" width="5">
-				<Method lines="2" name="render" parameters="3"/>
+				<Method comments="0" documentation="0" lines="2" name="settings_name" parameters="1"/>
+				<Method comments="0" documentation="0" lines="2" name="render" parameters="3"/>
 				<OutCall>
 					<ClassName name="class name"/>
 				</OutCall>
 			</Class>
 			<Class lines="5" name="PlainText" width="5">
-				<Method lines="2" name="render" parameters="3"/>
+				<Method comments="0" documentation="0" lines="2" name="render" parameters="3"/>
 				<OutCall>
 					<ClassName name="class name"/>
 				</OutCall>
@@ -242,8 +266,8 @@
 		</Module>
 		<Module name="cheetahtemplates.py">
 			<Class lines="15" name="Cheetah" width="5">
-				<Method lines="4" name="__init__" parameters="3"/>
-				<Method lines="7" name="render" parameters="3"/>
+				<Method comments="0" documentation="0" lines="4" name="__init__" parameters="3"/>
+				<Method comments="0" documentation="0" lines="7" name="render" parameters="3"/>
 				<OutCall>
 					<ClassName name="class name"/>
 				</OutCall>
@@ -251,8 +275,8 @@
 		</Module>
 		<Module name="jinja2templates.py">
 			<Class lines="16" name="Jinja2" width="5">
-				<Method lines="5" name="__init__" parameters="3"/>
-				<Method lines="7" name="render" parameters="3"/>
+				<Method comments="0" documentation="0" lines="5" name="__init__" parameters="3"/>
+				<Method comments="0" documentation="0" lines="7" name="render" parameters="3"/>
 				<OutCall>
 					<ClassName name="class name"/>
 				</OutCall>
@@ -260,9 +284,9 @@
 		</Module>
 		<Module name="makotemplates.py">
 			<Class lines="55" name="Mako" width="5">
-				<Method lines="7" name="=" parameters="1"/>
-				<Method lines="24" name="__init__" parameters="3"/>
-				<Method lines="7" name="render" parameters="3"/>
+				<Method comments="0" documentation="0" lines="7" name="=" parameters="1"/>
+				<Method comments="0" documentation="0" lines="24" name="__init__" parameters="3"/>
+				<Method comments="0" documentation="0" lines="7" name="render" parameters="3"/>
 				<OutCall>
 					<ClassName name="class name"/>
 				</OutCall>

@@ -20,12 +20,16 @@ class ModuleParser():
         self.lineCounter = len(self.code)
         self.filePath = filePath
     
+    
+    
     ''' Returns True if line is empty or False if line is not empty '''
     def isEmpty(self, i):
         line = self.code[i].strip()
         if((len(line) < 1) or (self.isCommentLine(i))):
             return True
         return False
+    
+    
     
     ''' Returns True if given line is a comment '''
     def isCommentLine(self, i):
@@ -39,6 +43,8 @@ class ModuleParser():
             return False
         else:
             return True
+    
+    
     
     ''' Returns if the indentation of the current line to be parsed is still as deep
         as the current depth we are on '''
@@ -63,6 +69,7 @@ class ModuleParser():
         return begin-1
         
         
+        
     ''' Count lines from self.code between indices [begin, end[ '''
     def countLines(self, begin, end):
         count = 0; 
@@ -77,9 +84,27 @@ class ModuleParser():
     
     
     
+    ''' Count lines of documentation in front of a method '''
+    def countDocumentation(self, begin):
+        i = begin
+        while self.isEmpty(i-1):
+            i = i - 1
+        counter = 0
+        while (i != begin):
+            if(self.isCommentLine(i)):
+                counter = counter + 1
+            i = i + 1
+        return counter
+        
+        
+    
     ''' Count comments from self.code between indices [begin, end[ '''
     def countComments(self, begin, end):
-        return 2
+        counter = 0
+        for i in range(begin, end):
+            if self.isCommentLine(i):
+                counter = counter + 1
+        return counter 
     
     
     
@@ -92,6 +117,7 @@ class ModuleParser():
     ''' count the number of parameters in a method given its signature '''
     def countParameters(self, methodSignature):
         return methodSignature.count(',') + 1 
+    
     
     
     ''' Iterate through class to write appropriate outcall tags to xml
@@ -114,9 +140,14 @@ class ModuleParser():
         
         parameters = self.countParameters(methodSignature)
         lines = self.countLines(begin, end)
+        comments = self.countComments(begin, end)
+        documentation = self.countDocumentation(begin)
         
         methodRoot.set('lines', str(lines))
         methodRoot.set('parameters', str(parameters))
+        methodRoot.set('comments', str(comments))
+        methodRoot.set('documentation', str(documentation))
+    
     
     
     ''' Iterate through lines to find end of class and then parse it '''
@@ -131,7 +162,7 @@ class ModuleParser():
         for i in range(begin, end):
             currLine = self.code[i].strip()
             words = currLine.split()
-            if (currLine.startswith('def') and (len(words) > 2)):
+            if (currLine.startswith('def') and (len(words) >= 2)):
                 methodName = ''
                 for j in range(0, len(words[1])):
                     if words[1][j] == '(':
