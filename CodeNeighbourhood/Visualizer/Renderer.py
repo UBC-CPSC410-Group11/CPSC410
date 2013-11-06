@@ -7,6 +7,8 @@ from Analyzer.CustomTypes import *
 import sys
 import pygame
 
+
+
 class Renderer(object):
     MAX_WIDTH = 1200
     MAX_HEIGHT = 700
