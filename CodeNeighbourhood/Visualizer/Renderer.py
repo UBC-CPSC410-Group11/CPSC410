@@ -11,15 +11,15 @@ import pygame
 
 class Renderer(object):
     MAX_WIDTH = 1200
-    MAX_HEIGHT = 700
+    MAX_HEIGHT = 900
     HOUSE_X_SPACER = 20
-    HOUSE_Y_SPACER = 10
+    HOUSE_Y_SPACER = 20
     BLOCK_X_SPACER = 20 #Space between the edge of the picture and the left and right sides of a block, or between blocks
     BLOCK_Y_SPACER = 40 #Space between the edge of the picture and the top or botom of a block, or between blocks
     BLOCK_HEIGHT = 100
     MIN_BLOCK_WIDTH = 100
     HOUSE_WIDTH_MULTIPLIER = 20 #For first iteration only - once "width" becomes more accurate, not needed
-    HOUSE_HEIGHT_MULTIPLIER = 3 #Temporary
+    HOUSE_HEIGHT_MULTIPLIER = 2 #Temporary
     NO_CLASS_BLOCK_WIDTH = 60
     HOUSE_MIN_HEIGHT = 20
 
@@ -39,7 +39,7 @@ class Renderer(object):
     blocks = []
     
     currentX = BLOCK_X_SPACER
-    currentY = BLOCK_Y_SPACER
+    currentY = BLOCK_Y_SPACER * 2
     currentSide = 'L'  #'L' or 'R'
     rowWidth = 0
     remainingRowWidth = 0
@@ -166,32 +166,40 @@ class Renderer(object):
         x_pos = topLeft[0] + self.HOUSE_X_SPACER
         y_pos = topLeft[1] + self.HOUSE_Y_SPACER
         for c in classes:
-            #get class height
-            #call helper function to determine x and y position of top left corner
-            print c.getLines()
             self.buildHouse(c, x_pos, y_pos)
             width = int(c.getWidth()) * self.HOUSE_WIDTH_MULTIPLIER
             x_pos = x_pos + width + self.HOUSE_X_SPACER
         return None
-    
-    def calculateHousePosition(self, currentTopLeft, theClass):
-        lines = theClass.getLines()
-        
-        
-        newTopLeft = ()
-        
-        return newTopLeft
 
     def buildHouse(self, theClass, x, y):
         name = theClass.getName()
-        length = 20 #change later to theClass.getLines()
+        lines = int(theClass.getLines())
+        print lines
+        if lines < self.HOUSE_MIN_HEIGHT:
+            lines = self.HOUSE_MIN_HEIGHT
+        length = lines * self.HOUSE_HEIGHT_MULTIPLIER
         width = int(theClass.getWidth()) * self.HOUSE_WIDTH_MULTIPLIER
-        topLeft = (x, y)
-        condition = int(theClass.getScore())
+        y_pos = self.calculateHouseYPosition(y, length)
+        topLeft = (x, y_pos) #change here
         
+        condition = int(theClass.getScore())
         theHouse = House(name, length, width, topLeft, condition)
         self.houses.append(theHouse)
         return None
+    
+    def calculateHouseYPosition(self, currentYPosition, height):
+        #currentYPosition should be the y value of the top of a block + self.BlOCK_Y_SPACER
+        baseYOfBlock = currentYPosition - self.HOUSE_Y_SPACER + self.BLOCK_HEIGHT
+        height = height
+        y = baseYOfBlock - height - self.HOUSE_Y_SPACER
+        '''
+        print ('Current  Y Position:', currentYPosition)
+        print ('Base Y Value of BLOCK:' ,baseYOfBlock)
+        print ('Height of House: ', height)
+        print ('Calculated Y Value of Top of House: ', y)
+        print '****************'
+        '''
+        return y
     
     def buildWindow(self, method):
         #TODO Implement
@@ -239,7 +247,7 @@ class Renderer(object):
         topLeft = house.getTopLeft()
         left = topLeft[0]
         top = topLeft[1]
-        length = house.getLength() * self.HOUSE_HEIGHT_MULTIPLIER
+        length = house.getLength()
         width = house.getWidth()
         condition = house.getCondition()
         
