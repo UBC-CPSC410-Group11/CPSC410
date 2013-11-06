@@ -3,15 +3,15 @@ Created on Oct 31, 2013
 
 @author: Mike and Jon
 '''
-from CodeToXML import DirectoryCrawler
+from SourceParser.DirectoryCrawler import directoryCrawl
+
 
 from Visualizer.Renderer import Renderer
-from Visualizer.XMLParser import XMLParser
+from Analyzer.XMLParser import *
 
 
 def main():
-    XMLString = DirectoryCrawler.directoryCrawl('pyntaCode')
-    #print XMLString
+    XMLString = directoryCrawl('pyntaCode')
     
     XMLParser1 = XMLParser(XMLString)
     

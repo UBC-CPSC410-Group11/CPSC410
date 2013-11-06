@@ -3,7 +3,7 @@ Created on Oct 23, 2013
 
 @author: Mike
 '''
-from CustomTypes import *
+from Analyzer.CustomTypes import *
 import sys
 import pygame
 
