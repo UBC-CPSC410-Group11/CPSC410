@@ -91,7 +91,7 @@ class ModuleParser():
     
     ''' count the number of parameters in a method given its signature '''
     def countParameters(self, methodSignature):
-        return methodSignature.count(',') + 1
+        return methodSignature.count(',') + 1 
     
     
     ''' Iterate through class to write appropriate outcall tags to xml
