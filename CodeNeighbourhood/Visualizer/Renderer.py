@@ -21,9 +21,11 @@ class Renderer(object):
     HOUSE_WIDTH_MULTIPLIER = 20 #For first iteration only - once "width" becomes more accurate, not needed
     HOUSE_HEIGHT_MULTIPLIER = 3 #Temporary
     NO_CLASS_BLOCK_WIDTH = 60
+    HOUSE_MIN_HEIGHT = 20
+
     
     BACKGROUND_COLOUR = (169,167,146)
-    GREEN_BLOCK_COLOUR = (141,153,109)
+    PACKAGE_BLOCK_COLOURS = ((141,153,109), (141,123,109), (141,163,109), (141,133,109), (141,173,109), (141,113,109))
     RED_HOUSE_COLOUR = (255,0,0)
     
     screen = {}
@@ -44,6 +46,7 @@ class Renderer(object):
     rightSideRowStart = 0
     totalRowHeight = 0
     remainingRowHeight = 0
+    blockColourCounter = 0
     
     def __init__(self, packages):
         self.packages = packages
@@ -52,7 +55,6 @@ class Renderer(object):
     Call this method to generate the output image
     '''
     def renderNeighbourhood(self):
-        #self.rowWidth = (self.MAX_WIDTH / 2) - (1.5 * self.BLOCK_X_SPACER) #- Uncomment to change to half-screen spacing
         self.rowWidth = self.MAX_WIDTH - 2 * self.BLOCK_X_SPACER
         self.remainingRowWidth = self.rowWidth
         self.rowHeight = (self.MAX_HEIGHT - 2 * self.BLOCK_Y_SPACER)
@@ -78,18 +80,23 @@ class Renderer(object):
         
         for package in self.packages:
             self.buildPackage(package)
+            if self.blockColourCounter == 5:
+                self.blockColourCounter = 0
+            else:
+                self.blockColourCounter = self.blockColourCounter + 1
         return None
 
     def buildPackage(self, package):
         #Packages are implicitly represented in the output as blocks which are close together
         for module in package.modules:
-            self.buildBlock(module)
+            blockColour = self.PACKAGE_BLOCK_COLOURS[self.blockColourCounter]
+            self.buildBlock(module, blockColour)
         return None
 
-    def buildBlock (self, module):
+    def buildBlock (self, module, blockColour):
         #Modules are explicitly represented in the output as blocks (of 'grass') which surround the houses(classes) of that module
         blockRects = self.calculateBlockDimensions(module) #a list of tuples representing the rect dimensions for a single block
-        colour = self.GREEN_BLOCK_COLOUR #change later to represent module score
+        colour = blockColour
         
         i = 0
         length = len(blockRects)
@@ -134,7 +141,7 @@ class Renderer(object):
             totalWidth = totalWidth + self.HOUSE_X_SPACER
             width = int(c.getWidth()) * self.HOUSE_WIDTH_MULTIPLIER
             totalWidth = totalWidth + width
-        #here
+
         if totalWidth == 0:
             totalWidth = self.NO_CLASS_BLOCK_WIDTH
             e = 1
@@ -143,17 +150,7 @@ class Renderer(object):
             e = 0
         
         lastHouseWidth = width
-        halfScreen = self.rowWidth
         tempTotalWidth = totalWidth
-        
-        #create n number of full row rects
-    
-        while (tempTotalWidth > halfScreen):
-            tempTotalWidth = tempTotalWidth - halfScreen
-            rect = (halfScreen, self.BLOCK_HEIGHT, 1, e)
-            dimensions.append(rect)
-            
-        #create the last rect
         
         if (tempTotalWidth != 0):
             if (tempTotalWidth >= lastHouseWidth):
@@ -169,11 +166,21 @@ class Renderer(object):
         x_pos = topLeft[0] + self.HOUSE_X_SPACER
         y_pos = topLeft[1] + self.HOUSE_Y_SPACER
         for c in classes:
+            #get class height
+            #call helper function to determine x and y position of top left corner
+            print c.getLines()
             self.buildHouse(c, x_pos, y_pos)
             width = int(c.getWidth()) * self.HOUSE_WIDTH_MULTIPLIER
             x_pos = x_pos + width + self.HOUSE_X_SPACER
         return None
     
+    def calculateHousePosition(self, currentTopLeft, theClass):
+        lines = theClass.getLines()
+        
+        
+        newTopLeft = ()
+        
+        return newTopLeft
 
     def buildHouse(self, theClass, x, y):
         name = theClass.getName()
@@ -206,6 +213,7 @@ class Renderer(object):
         for block in self.blocks:
             self.drawBlock(block)
         return None
+    
     '''
     Render a Block
     '''
@@ -216,7 +224,6 @@ class Renderer(object):
         length = block.getLength()
         width = block.getWidth()
         colour = block.getColour()
-        
         rect = (left, top, width, length)
         
         pygame.draw.rect(self.screen, colour, rect, 0)

@@ -10,8 +10,6 @@ from Visualizer.Renderer import Renderer
 from Analyzer.XMLParser import *
 
 
-
-
 def main():
     XMLString = directoryCrawl('pyntaCode')
     
