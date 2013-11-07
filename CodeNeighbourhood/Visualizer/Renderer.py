@@ -6,6 +6,7 @@ Created on Oct 23, 2013
 from Analyzer.CustomTypes import *
 import sys
 import pygame
+from random import randint
 
 
 
@@ -53,7 +54,7 @@ class Renderer(object):
     totalRowHeight = 0
     remainingRowHeight = 0
     blockColourCounter = 0
-    houseColourCounter = 0
+    lastHouseColourIndex = 0
     
     def __init__(self, packages):
         self.packages = packages
@@ -268,7 +269,6 @@ class Renderer(object):
             pass
         else:
             self.drawPerfectHouse(house)
-
         return None
     
     def drawPerfectHouse(self, house):
@@ -277,12 +277,13 @@ class Renderer(object):
         top = topLeft[1]
         length = house.getLength()
         width = house.getWidth()
+        randomIndex = randint(0,7)
+        while randomIndex == self.lastHouseColourIndex:
+            randomIndex = randint(0,7)
+        self.lastHouseColourIndex = randomIndex
         
-        if self.houseColourCounter == 8:
-            self.houseColourCounter = 0
+        colour = self.HOUSE_COLOURS[randomIndex]
         
-        colour = self.HOUSE_COLOURS[self.houseColourCounter]
-        self.houseColourCounter = self.houseColourCounter + 1
         
         rect = (left, top, width, length)
         pygame.draw.rect(self.screen, colour, rect, 0)
