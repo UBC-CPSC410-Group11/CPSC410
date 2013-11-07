@@ -11,8 +11,8 @@ from random import randint
 
 
 class Renderer(object):
-    MAX_WIDTH = 1200
-    MAX_HEIGHT = 900
+    MAX_WIDTH = 1400
+    MAX_HEIGHT = 800
     HOUSE_X_SPACER = 20
     HOUSE_Y_SPACER = 20
     BLOCK_X_SPACER = 20 #Space between the edge of the picture and the left and right sides of a block, or between blocks
@@ -20,12 +20,20 @@ class Renderer(object):
     BLOCK_HEIGHT = 100
     MIN_BLOCK_WIDTH = 100
     HOUSE_WIDTH_MULTIPLIER = 20 #For first iteration only - once "width" becomes more accurate, not needed
-    HOUSE_HEIGHT_MULTIPLIER = 2 #Temporary
+    HOUSE_HEIGHT_MULTIPLIER = 1 #Temporary
     NO_CLASS_BLOCK_WIDTH = 60
     HOUSE_MIN_HEIGHT = 20
     HOUSE_ROOF_HEIGHT = 10
     HOUSE_DOOR_HEIGHT = 20
     HOUSE_DOOR_WIDTH = 10
+    
+    WINDOW_X_SPACER = 4
+    WINDOW_Y_SPACER = 5
+    WINDOW_MIN_HEIGHT = 5
+    WINDOW_MIN_WIDTH = 5
+    WINDOW_WIDTH_MULTIPLIER = 20
+    WINDOW_HEIGHT_MULTIPLIER = 2
+    WINDOW_ROW_HEIGHT = 20
 
     
     BACKGROUND_COLOUR = (169,167,146)
@@ -38,7 +46,6 @@ class Renderer(object):
     screen = {}
     packages = []
     houses = []
-    windows = []
     tents = []
     powerlines = []
     clotheslines = []
@@ -55,6 +62,14 @@ class Renderer(object):
     remainingRowHeight = 0
     blockColourCounter = 0
     lastHouseColourIndex = 0
+    windowCurrentX = 0
+    windowCurrentY = 0
+    windowRows = 0
+    windowCurrentRow = 0
+    windowTallestWindow = 0
+    
+    
+    
     
     def __init__(self, packages):
         self.packages = packages
@@ -180,17 +195,30 @@ class Renderer(object):
         return None
 
     def buildHouse(self, theClass, x, y):
+        methods = theClass.getMethods()
+        self.windowTallestWindow = self.calculateTallestWindow(methods)
+        
         name = theClass.getName()
         lines = int(theClass.getLines())
+        
         if lines < self.HOUSE_MIN_HEIGHT:
             lines = self.HOUSE_MIN_HEIGHT
+        
         length = lines * self.HOUSE_HEIGHT_MULTIPLIER
+        
+        if length < self.windowTallestWindow:
+            length = self.windowTallestWindow + self.WINDOW_Y_SPACER
+            
+        length = length + self.HOUSE_DOOR_HEIGHT
         width = int(theClass.getWidth()) * self.HOUSE_WIDTH_MULTIPLIER
         y_pos = self.calculateHouseYPosition(y, length)
-        topLeft = (x, y_pos) #change here
-        
+        topLeft = (x, y_pos)
         condition = int(theClass.getScore())
         theHouse = House(name, length, width, topLeft, condition)
+        
+
+        windows = self.buildWindows(methods, topLeft, width, length)
+        theHouse.setWindows(windows)
         self.houses.append(theHouse)
         return None
     
@@ -202,17 +230,96 @@ class Renderer(object):
 
         return y
     
-    def buildWindow(self, method):
-        #TODO Implement
-        return None
+    def buildWindows(self, methods, houseTopLeft, houseWidth, houseHeight):
+        windows = []
+        self.windowCurrentX = houseTopLeft[0] + self.WINDOW_X_SPACER
+        self.windowCurrentY = houseTopLeft[1] + self.WINDOW_Y_SPACER
+        self.sumWindowWidth = 0
+        self.windowRows = self.calculateWindowRows(methods, houseWidth, houseHeight)
+
+        
+        for method in methods:
+            window = self.buildWindow(method, houseTopLeft, houseWidth, houseHeight)
+            windows.append(window)
+            
+        self.windowCurrentRow = 0
+        return windows
+    
+    def buildWindow(self, method, houseTopLeft, houseWidth, houseHeight):
+        dimensions = self.calculateWindowDimensions(method, houseTopLeft, houseWidth, houseHeight)
+        topLeft = dimensions[0]
+        width = dimensions[1]
+        height = dimensions[2]
+        colour = (179,242,239)
+        window = Window(topLeft, width, height, colour)
+        return window
+    '''
+    returns a tuple ((left, top), width, height) of the dimensions and position of a window
+    '''
+    def calculateWindowDimensions (self, method, houseTopLeft, houseWidth, houseHeight):
+        width = int(method.getParameters()) * self.WINDOW_WIDTH_MULTIPLIER
+        height = int(method.getLines()) * self.WINDOW_HEIGHT_MULTIPLIER
+        houseXStart = houseTopLeft[0]
+        houseXEnd = houseXStart + houseWidth
+        houseYStart = houseTopLeft[1]
+        houseYEnd = houseYStart + houseHeight
+        
+        if self.WINDOW_ROW_HEIGHT > self.windowTallestWindow:
+            rowHeight = self.WINDOW_ROW_HEIGHT
+        else:
+            rowHeight = self.windowTallestWindow
+    
+        #start at the top left, move right, then to new rows
+        xSpaceRemaining = houseXEnd - self.windowCurrentX
+
+        if width > xSpaceRemaining:
+            # move down to new row
+            self.windowCurrentY = self.windowCurrentY + rowHeight + self.WINDOW_Y_SPACER
+            self.windowCurrentX = houseXStart + self.WINDOW_X_SPACER
+        
+            topLeft = (self.windowCurrentX, self.windowCurrentY)
+            dimensions = (topLeft, width, height)
+            
+            self.windowCurrentX = self.windowCurrentX + width + self.WINDOW_X_SPACER
+        else:
+            #pass #create window here
+            topLeft = (self.windowCurrentX, self.windowCurrentY)
+            dimensions = (topLeft, width, height)
+            self.windowCurrentX = self.windowCurrentX + width + self.WINDOW_X_SPACER
+    
+        return dimensions
+    
+    def calculateWindowRows(self, methods, houseWidth, houseHeight):
+        rows = 0
+        totalWindowWidth = self.WINDOW_X_SPACER
+        for method in methods:
+            width = int(method.getParameters()) * self.WINDOW_WIDTH_MULTIPLIER
+            totalWindowWidth = totalWindowWidth + width + self.WINDOW_X_SPACER
+        totalWindowWidth = totalWindowWidth + self.WINDOW_X_SPACER
+        
+        tempTotalWidth = totalWindowWidth
+        while tempTotalWidth > 0:
+            rows = rows + 1
+            tempTotalWidth = tempTotalWidth - houseWidth
+        return rows
+    
+    def calculateTallestWindow(self, methods):
+        tallestMethod = 0
+        for method in methods:
+            height = int(method.getLines()) * self.WINDOW_HEIGHT_MULTIPLIER
+            if height > tallestMethod:
+                tallestMethod = height
+        return tallestMethod
     
     '''
     Initialize the output window
     '''
     def initDrawing(self):
         pygame.init()
+        pygame.display.set_caption('Code Neighbourhood')
         self.screen = pygame.display.set_mode((self.MAX_WIDTH, self.MAX_HEIGHT))
         self.screen.fill(self.BACKGROUND_COLOUR)
+    
         return None
     
     '''
@@ -287,6 +394,10 @@ class Renderer(object):
         
         rect = (left, top, width, length)
         pygame.draw.rect(self.screen, colour, rect, 0)
+        windows = house.getWindows()
+        
+        self.drawWindows(windows)
+        
         self.drawHouseRoof(topLeft, width)
         self.drawHouseDoor(topLeft, width, length)
         
@@ -320,8 +431,20 @@ class Renderer(object):
         
         return None
     
+    def drawWindows(self, windows):
+        for window in windows:
+            self.drawWindow(window)
+    
     def drawWindow(self, window):
-        #TODO Implement
+        topLeft = window.getTopLeft()
+        width = window.getWidth()
+        height = window.getHeight()
+        colour = window.getColour()
+        
+        rect = (topLeft[0], topLeft[1], width, height)
+        
+        pygame.draw.rect(self.screen, colour, rect, 0)
+        
         return None
     
     def drawFountain(self, fountain):
@@ -403,6 +526,7 @@ class House(object):
     width = 0
     topLeft = (0,0)
     condition = 0
+    windows = []
     
     def __init__(self, name, length, width, topLeft, condition):
         self.name = name
@@ -425,6 +549,12 @@ class House(object):
     
     def getCondition(self):
         return self.condition
+    
+    def setWindows(self, windows):
+        self.windows = windows
+        
+    def getWindows(self):
+        return self.windows
 
     
 class Window(object):
@@ -433,11 +563,24 @@ class Window(object):
     colour = (0,0,0)
     topLeft = (0,0)
     
-    def __init__(self, height, width, colour, topLeft):
+    def __init__(self, topLeft, width, height, colour):
         self.height = height
         self.width = width
         self.colour = colour
         self.topLeft = topLeft
+    
+    def getHeight(self):
+        return self.height
+    
+    def getWidth(self):
+        return self.width
+    
+    def getColour(self):
+        return self.colour
+    
+    def getTopLeft(self):
+        return self.topLeft
+    
         
 class Tent(object):
     topLeft = (0,0)
