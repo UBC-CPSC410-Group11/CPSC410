@@ -8,8 +8,6 @@ import sys
 import pygame
 from random import randint
 
-
-
 class Renderer(object):
     MAX_WIDTH = 1400
     MAX_HEIGHT = 800
@@ -114,6 +112,7 @@ class Renderer(object):
         for module in package.modules:
             blockColour = self.PACKAGE_BLOCK_COLOURS[self.blockColourCounter]
             self.buildBlock(module, blockColour)
+
         return None
 
     def buildBlock (self, module, blockColour):
@@ -136,6 +135,16 @@ class Renderer(object):
             #Build Houses Here
             classes = module.getClasses()
             self.buildHouses(topLeft, classes)
+            
+            print topLeft
+            print self.currentX
+            print self.currentY
+            print '****************'
+            #Build Tents Here
+            
+            #freeMethods = module.getFreeMethods()
+            #self.buildTents(freeMethods)
+            
             
             self.blocks.append(block)
             
@@ -185,6 +194,65 @@ class Renderer(object):
             dimensions.append(rect)
         return dimensions
     
+    '''        
+    Find the next available place for a block given the width and height, and update
+    currentX, currentY, currentSide accordingly
+    returns (x,y) as the topLeft coords of the block
+    '''
+    def blockCalculatePosition(self, width, height):
+        topLeft = (0,0)
+        spaceForNewRow = 0
+        if (self.remainingRowHeight >= (1 * self.BLOCK_Y_SPACER) + 2 * self.BLOCK_HEIGHT):
+            spaceForNewRow = 1   
+        spaceOnCurrentRow = 0
+        if (self.remainingRowWidth >= width):
+            spaceOnCurrentRow = 1
+        
+        if (spaceOnCurrentRow == 1): #if there's space on the current row:
+            self.currentX = self.currentX
+            topLeft = (self.currentX, self.currentY);
+            self.blockUpdateHorizontalPosition(width)
+            return topLeft
+
+        else: #go to a new row
+            self.remainingRowWidth = self.rowWidth
+            if (spaceForNewRow == 1):
+                #go to start of a new row on the same side
+                if self.currentSide == 'L':
+                    self.currentX = self.BLOCK_X_SPACER
+                    self.blockUpdateVerticalPosition(height)
+                elif self.currentSide == 'R':
+                    self.currentX = self.rightSideRowStart
+                    self.blockUpdateVerticalPosition(height)
+                topLeft = (self.currentX, self.currentY)
+                self.blockUpdateHorizontalPosition(width)
+                return topLeft
+                
+            else:  #go to other side
+                if self.currentSide == 'L':
+                    self.currentX = self.rightSideRowStart
+                    self.currentY = self.BLOCK_Y_SPACER
+                    self.remainingRowHeight = self.rowHeight
+                    self.currentSide = 'R'
+                    topLeft = (self.currentX, self.currentY)
+                    self.blockUpdateHorizontalPosition(width)
+                    return topLeft
+    '''
+    update currentX and remainingRowWidth  after the addition of a new block
+    '''
+    def blockUpdateHorizontalPosition(self, width):
+        self.currentX = self.currentX + width + self.BLOCK_X_SPACER
+        self.remainingRowWidth = self.remainingRowWidth - width - self.BLOCK_X_SPACER
+        return None
+    '''
+    update currentY and remainingRowHeight after the additoon of a new block in a new row
+    '''
+    def blockUpdateVerticalPosition(self, height):
+        self.currentY = self.currentY + height + self.BLOCK_Y_SPACER
+        self.remainingRowHeight = self.remainingRowHeight - height - self.BLOCK_Y_SPACER
+        return None
+    
+    
     def buildHouses(self, topLeft, classes):
         x_pos = topLeft[0] + self.HOUSE_X_SPACER
         y_pos = topLeft[1] + self.HOUSE_Y_SPACER
@@ -207,7 +275,7 @@ class Renderer(object):
         length = lines * self.HOUSE_HEIGHT_MULTIPLIER
         
         if length < self.windowTallestWindow:
-            length = self.windowTallestWindow + self.WINDOW_Y_SPACER
+            length = self.windowTallestWindow + self.WINDOW_Y_SPACER * 4
             
         length = length + self.HOUSE_DOOR_HEIGHT
         width = int(theClass.getWidth()) * self.HOUSE_WIDTH_MULTIPLIER
@@ -310,6 +378,15 @@ class Renderer(object):
             if height > tallestMethod:
                 tallestMethod = height
         return tallestMethod
+    
+    def buildTents(self, freeMethods):
+        for fm in freeMethods:
+            self.buildTent(fm)
+        return None
+    
+    def buildTent(self, freeMethod):
+        
+        return None
     
     '''
     Initialize the output window
@@ -462,63 +539,6 @@ class Renderer(object):
     def drawTent(self, tent):
         #TODO Implement
         return None  
-    '''        
-    Find the next available place for a block given the width and height, and update
-    currentX, currentY, currentSide accordingly
-    returns (x,y) as the topLeft coords of the block
-    '''
-    def blockCalculatePosition(self, width, height):
-        topLeft = (0,0)
-        spaceForNewRow = 0
-        if (self.remainingRowHeight >= (1 * self.BLOCK_Y_SPACER) + 2 * self.BLOCK_HEIGHT):
-            spaceForNewRow = 1   
-        spaceOnCurrentRow = 0
-        if (self.remainingRowWidth >= width):
-            spaceOnCurrentRow = 1
-        
-        if (spaceOnCurrentRow == 1): #if there's space on the current row:
-            self.currentX = self.currentX
-            topLeft = (self.currentX, self.currentY);
-            self.blockUpdateHorizontalPosition(width)
-            return topLeft
-
-        else: #go to a new row
-            self.remainingRowWidth = self.rowWidth
-            if (spaceForNewRow == 1):
-                #go to start of a new row on the same side
-                if self.currentSide == 'L':
-                    self.currentX = self.BLOCK_X_SPACER
-                    self.blockUpdateVerticalPosition(height)
-                elif self.currentSide == 'R':
-                    self.currentX = self.rightSideRowStart
-                    self.blockUpdateVerticalPosition(height)
-                topLeft = (self.currentX, self.currentY)
-                self.blockUpdateHorizontalPosition(width)
-                return topLeft
-                
-            else:  #go to other side
-                if self.currentSide == 'L':
-                    self.currentX = self.rightSideRowStart
-                    self.currentY = self.BLOCK_Y_SPACER
-                    self.remainingRowHeight = self.rowHeight
-                    self.currentSide = 'R'
-                    topLeft = (self.currentX, self.currentY)
-                    self.blockUpdateHorizontalPosition(width)
-                    return topLeft
-    '''
-    update currentX and remainingRowWidth  after the addition of a new block
-    '''
-    def blockUpdateHorizontalPosition(self, width):
-        self.currentX = self.currentX + width + self.BLOCK_X_SPACER
-        self.remainingRowWidth = self.remainingRowWidth - width - self.BLOCK_X_SPACER
-        return None
-    '''
-    update currentY and remainingRowHeight after the additoon of a new block in a new row
-    '''
-    def blockUpdateVerticalPosition(self, height):
-        self.currentY = self.currentY + height + self.BLOCK_Y_SPACER
-        self.remainingRowHeight = self.remainingRowHeight - height - self.BLOCK_Y_SPACER
-        return None
     
 class House(object):
     name = ''
