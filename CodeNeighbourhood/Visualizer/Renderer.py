@@ -22,11 +22,17 @@ class Renderer(object):
     HOUSE_HEIGHT_MULTIPLIER = 2 #Temporary
     NO_CLASS_BLOCK_WIDTH = 60
     HOUSE_MIN_HEIGHT = 20
+    HOUSE_ROOF_HEIGHT = 10
+    HOUSE_DOOR_HEIGHT = 20
+    HOUSE_DOOR_WIDTH = 10
 
     
     BACKGROUND_COLOUR = (169,167,146)
-    PACKAGE_BLOCK_COLOURS = ((141,153,109), (141,123,109), (141,163,109), (141,133,109), (141,173,109), (141,113,109))
+    PACKAGE_BLOCK_COLOURS = [ (68,131,7), (141,153,109),(87,158,18), (96,149,84), (141,173,109), (89,158,22)]
     RED_HOUSE_COLOUR = (255,0,0)
+    HOUSE_COLOURS = [(0,174, 239), (255,255,255), (255, 242,0), (123, 114, 180), (255, 184, 107), (224, 133, 141), (121, 182, 176), (197, 232, 156)]
+    HOUSE_DOOR_AND_ROOF_COLOUR = (115,99,87)
+
     
     screen = {}
     packages = []
@@ -47,6 +53,7 @@ class Renderer(object):
     totalRowHeight = 0
     remainingRowHeight = 0
     blockColourCounter = 0
+    houseColourCounter = 0
     
     def __init__(self, packages):
         self.packages = packages
@@ -174,7 +181,6 @@ class Renderer(object):
     def buildHouse(self, theClass, x, y):
         name = theClass.getName()
         lines = int(theClass.getLines())
-        print lines
         if lines < self.HOUSE_MIN_HEIGHT:
             lines = self.HOUSE_MIN_HEIGHT
         length = lines * self.HOUSE_HEIGHT_MULTIPLIER
@@ -192,13 +198,7 @@ class Renderer(object):
         baseYOfBlock = currentYPosition - self.HOUSE_Y_SPACER + self.BLOCK_HEIGHT
         height = height
         y = baseYOfBlock - height - self.HOUSE_Y_SPACER
-        '''
-        print ('Current  Y Position:', currentYPosition)
-        print ('Base Y Value of BLOCK:' ,baseYOfBlock)
-        print ('Height of House: ', height)
-        print ('Calculated Y Value of Top of House: ', y)
-        print '****************'
-        '''
+
         return y
     
     def buildWindow(self, method):
@@ -244,17 +244,77 @@ class Renderer(object):
         return None
     
     def drawHouse(self, house):
+        condition = int(house.getCondition())
+        #TODO Call different methods to draw different houses based upon condition
+        if condition == 0:
+            pass
+        if condition == 1:
+            pass
+        if condition == 2:
+            pass
+        if condition == 3:
+            pass
+        if condition == 4:
+            pass
+        if condition == 5:
+            pass
+        if condition == 6:
+            pass
+        if condition == 7:
+            pass
+        if condition == 8:
+            pass
+        if condition == 9:
+            pass
+        else:
+            self.drawPerfectHouse(house)
+
+        return None
+    
+    def drawPerfectHouse(self, house):
         topLeft = house.getTopLeft()
         left = topLeft[0]
         top = topLeft[1]
         length = house.getLength()
         width = house.getWidth()
-        condition = house.getCondition()
         
-        colour = self.RED_HOUSE_COLOUR #change later to be random
+        if self.houseColourCounter == 8:
+            self.houseColourCounter = 0
+        
+        colour = self.HOUSE_COLOURS[self.houseColourCounter]
+        self.houseColourCounter = self.houseColourCounter + 1
         
         rect = (left, top, width, length)
+        pygame.draw.rect(self.screen, colour, rect, 0)
+        self.drawHouseRoof(topLeft, width)
+        self.drawHouseDoor(topLeft, width, length)
         
+        return None
+    
+    def drawHouseRoof(self, topLeft, width):
+        pointList = []
+        pointList.append(topLeft)
+        x2 = topLeft[0] + width /2
+        y2 = topLeft[1] - self.HOUSE_ROOF_HEIGHT
+        point2 = (x2, y2)
+        pointList.append(point2)
+        x3 = topLeft[0] + width
+        y3 = topLeft[1]
+        point3 = (x3, y3)
+        pointList.append(point3)
+
+        colour = self.HOUSE_DOOR_AND_ROOF_COLOUR
+        pygame.draw.polygon(self.screen, colour, pointList, 0)
+        
+        return None
+    
+    def drawHouseDoor(self, topLeft, width, height):
+        x_center = topLeft[0] + width/2
+        y_baseline = topLeft[1] + height
+        x = x_center - self.HOUSE_DOOR_WIDTH / 2
+        y = y_baseline - self.HOUSE_DOOR_HEIGHT
+        rect = (x,y,self.HOUSE_DOOR_WIDTH, self.HOUSE_DOOR_HEIGHT)
+        colour = self.HOUSE_DOOR_AND_ROOF_COLOUR
         pygame.draw.rect(self.screen, colour, rect, 0)
         
         return None
