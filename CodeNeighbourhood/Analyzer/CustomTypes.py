@@ -11,11 +11,11 @@ class Class(object):
     width = ""
     lines = ""
     
-    def __init__(self, in_Name, in_Score, in_Width, in_Lines):
+    def __init__(self, in_Name, in_Width, in_Lines):
         self.methods = []
         self.outCalls = []
         self.name = in_Name
-        self.score = in_Score
+        self.score = 0
         self.width = in_Width
         self.lines = in_Lines
 
@@ -37,6 +37,9 @@ class Class(object):
     def getScore(self):
         return self.score
     
+    def setScore(self, in_Score):
+        self.score = in_Score
+    
     def getWidth(self):
         return self.width
     
@@ -48,11 +51,15 @@ class Method(object):
     score = ""
     parameters = ""
     lines = ""
-    def __init__(self, in_Name, in_Score, in_Parameters, in_Lines):
+    commentLines = ""
+    documentationLines = ""
+    def __init__(self, in_Name, in_Parameters, in_Lines, in_ComLines, in_DocLines):
         self.name = in_Name
-        self.score = in_Score
+        self.score = 0
         self.parameters = in_Parameters
         self.lines = in_Lines
+        self.commentLines = in_ComLines
+        self.documentationLines = in_DocLines
     
     def getName(self):
         return self.name
@@ -65,6 +72,9 @@ class Method(object):
     
     def getLines(self):
         return self.lines
+    
+    def setScore(self, in_Score):
+        self.score = in_Score
     
 
 
@@ -109,3 +119,31 @@ class Package(object):
     
     def getName(self):
         return self.name
+    
+class OutCall(object):
+    caller = ""
+    callee = ""
+    numCalls = ""
+    inModuleCall = ""
+    
+    def __init__(self, in_Caller, in_Callee, in_InModule):
+        self.caller = in_Caller
+        self.callee = in_Callee
+        numCalls = 1
+        self.inModuleCall = in_InModule
+        
+    def addCall(self):
+        self.numCalls = self.numCalls + 1
+        
+    def getNumCalls(self):
+        return self.numCalls
+    
+    def getCaller(self):
+        return self.caller
+    
+    def getCallee(self):
+        return self.callee
+    
+    def withinModule(self):
+        return self.inModuleCall
+
