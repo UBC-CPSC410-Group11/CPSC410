@@ -155,7 +155,7 @@ class OutCall(object):
     def setInModule(self, in_Bool):
         self.inModuleCall = in_Bool
 
-def SetInModuleBools(in_Packages):
+def setInModuleBools(in_Packages):
     for pack in in_Packages:
         for mod in pack.getModules():
             for cl in mod.getClasses():

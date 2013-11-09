@@ -4,7 +4,7 @@ Created on 2013-10-22
 @author: jonrl33
 '''
 from xml.dom.minidom import parse, parseString
-from CustomTypes import Package, Module, Class, Method, SetInModuleBools
+from CustomTypes import Package, Module, Class, Method, setInModuleBools
 
 class XMLParser(object):
     packages = []
