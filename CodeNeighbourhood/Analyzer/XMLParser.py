@@ -8,7 +8,6 @@ from CustomTypes import *
 
 class XMLParser(object):
     packages = []
-    
     def __init__(self, in_File):
         self.parseFile(in_File)
             
@@ -71,5 +70,5 @@ def main():
         
 if __name__ == "__main__":
     main()
-       
-'''        
+'''       
+        

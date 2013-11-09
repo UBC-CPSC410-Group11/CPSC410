@@ -15,7 +15,9 @@ def main():
     XMLParser1 = XMLParser(XMLString)
     
     packages = XMLParser1.getPackages()
-    setInModuleBools(packages)
+    outCalls = setInModuleBools(packages)
+    
+    
     renderer1 = Renderer(packages)
     renderer1.renderNeighbourhood()
     return None

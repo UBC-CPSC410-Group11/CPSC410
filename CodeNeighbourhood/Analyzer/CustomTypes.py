@@ -156,6 +156,7 @@ class OutCall(object):
         self.inModuleCall = in_Bool
 
 def setInModuleBools(in_Packages):
+    outs = []
     for pack in in_Packages:
         for mod in pack.getModules():
             for cl in mod.getClasses():
@@ -164,6 +165,8 @@ def setInModuleBools(in_Packages):
                         out.setInModule(True)
                     else:
                         out.setInModule(False)
+                    outs.append(out)
+    return outs
                 
 def containsClassName(in_ClassName, in_Classes):
     for cls in in_Classes:
