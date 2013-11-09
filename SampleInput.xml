@@ -6,6 +6,7 @@
 			<Method name="Class1Method" score="10" parameters="2" lines="10"></Method>
 			<OutCall>
 				<ClassName name="Class2"></ClassName>
+				<ClassName name="Class2"></ClassName>
 			</OutCall>
 		</Class>
 		<FreeMethod name="FreeMethod"></FreeMethod>
@@ -22,6 +23,9 @@
 		<Class name="Class3" score="4" width="8" lines="100">
 			<Method name="Class3Method1" score="3" parameters="4" lines="18"></Method>
 			<Method name="Class3Method2" score="6" parameters="2" lines="82"></Method>
+			<OutCall>	
+				<ClassName name="Class2"></ClassName>
+			</OutCall>	
 		</Class>
 	</Module>
 </Package>

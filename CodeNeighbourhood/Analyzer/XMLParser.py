@@ -4,7 +4,7 @@ Created on 2013-10-22
 @author: jonrl33
 '''
 from xml.dom.minidom import parse, parseString
-from CustomTypes import Package, Module, Class, Method, setInModuleBools
+from CustomTypes import *
 
 class XMLParser(object):
     packages = []
@@ -57,18 +57,19 @@ class XMLParser(object):
 def main():
     parser = XMLParser("/Users/jonrl33/git/CPSC410/SampleInput.xml")
     pkgs = parser.getPackages()
-    SetInModuleBools(pkgs)
+    setInModuleBools(pkgs)
+    
     for p in pkgs:
         for m in p.getModules():
             for c in m.getClasses():
-                for meth in c.getMethods():
-                    print (m.getName(), c.getName(), meth.getName())
+                #for meth in c.getMethods():
+                #    print (m.getName(), c.getName(), meth.getName())
                 for out in c.getOutCalls():
                     print(out.getCaller(), out.getCallee(), out.withinModule())
                 
-        
+       
         
 if __name__ == "__main__":
     main()
-'''       
-        
+       
+'''        

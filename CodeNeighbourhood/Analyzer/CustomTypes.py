@@ -24,7 +24,7 @@ class Class(object):
         
     def addOutCall(self, in_Caller, in_Callee):
         for outCall in self.outCalls:
-            if (outCall.getCaller() == in_Caller & outCall.getCallee == in_Callee):
+            if ((outCall.getCaller() == in_Caller) and (outCall.getCallee() == in_Callee)):
                 outCall.addCall()
                 return
         self.outCalls.append(OutCall(in_Caller, in_Callee))
@@ -139,7 +139,7 @@ class OutCall(object):
         
     def addCall(self):
         self.numCalls = self.numCalls + 1
-        
+
     def getNumCalls(self):
         return self.numCalls
     
@@ -168,7 +168,5 @@ def setInModuleBools(in_Packages):
 def containsClassName(in_ClassName, in_Classes):
     for cls in in_Classes:
         if (in_ClassName == cls.getName()):
-            print ('in module %s' % in_ClassName)
             return True
-    print ('not in module %s' % in_ClassName)
     return False
