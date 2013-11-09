@@ -13,7 +13,7 @@
 			<Method name="Class2Method1" score="3" parameters="7" lines="3"></Method>
 			<Method name="Class2Method2" score="9" parameters="2" lines="32"></Method>
 			<OutCall>
-				<ClassName name="Class2"></ClassName>
+				<ClassName name="Class3"></ClassName>
 			</OutCall>
 		</Class>		
 

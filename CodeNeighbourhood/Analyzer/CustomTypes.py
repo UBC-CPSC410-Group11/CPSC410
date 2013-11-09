@@ -22,8 +22,13 @@ class Class(object):
     def addMethod(self, in_Method):
         self.methods.append(in_Method)
         
-    def addOutCall(self, in_ClassName):
-        self.outCalls.append(in_ClassName)
+    def addOutCall(self, in_Caller, in_Callee):
+        for outCall in self.outCalls:
+            if (outCall.getCaller() == in_Caller & outCall.getCallee == in_Callee):
+                outCall.addCall()
+                return
+        self.outCalls.append(OutCall(in_Caller, in_Callee))
+        
     
     def getOutCalls(self):
         return self.outCalls
@@ -126,11 +131,11 @@ class OutCall(object):
     numCalls = ""
     inModuleCall = ""
     
-    def __init__(self, in_Caller, in_Callee, in_InModule):
+    def __init__(self, in_Caller, in_Callee):
         self.caller = in_Caller
         self.callee = in_Callee
-        numCalls = 1
-        self.inModuleCall = in_InModule
+        self.numCalls = 1
+        self.inModuleCall = ""
         
     def addCall(self):
         self.numCalls = self.numCalls + 1
@@ -146,4 +151,24 @@ class OutCall(object):
     
     def withinModule(self):
         return self.inModuleCall
+    
+    def setInModule(self, in_Bool):
+        self.inModuleCall = in_Bool
 
+def SetInModuleBools(in_Packages):
+    for pack in in_Packages:
+        for mod in pack.getModules():
+            for cl in mod.getClasses():
+                for out in cl.getOutCalls():
+                    if (containsClassName(out.getCallee(), mod.getClasses())):
+                        out.setInModule(True)
+                    else:
+                        out.setInModule(False)
+                
+def containsClassName(in_ClassName, in_Classes):
+    for cls in in_Classes:
+        if (in_ClassName == cls.getName()):
+            print ('in module %s' % in_ClassName)
+            return True
+    print ('not in module %s' % in_ClassName)
+    return False
