@@ -16,11 +16,11 @@ class Renderer(object):
     BLOCK_X_SPACER = 20 #Space between the edge of the picture and the left and right sides of a block, or between blocks
     BLOCK_Y_SPACER = 40 #Space between the edge of the picture and the top or botom of a block, or between blocks
     BLOCK_HEIGHT = 100
-    MIN_BLOCK_WIDTH = 100
+    MIN_BLOCK_WIDTH = 80
     HOUSE_HEIGHT_MULTIPLIER = 1 #Temporary
     NO_CLASS_BLOCK_WIDTH = 60
     HOUSE_MIN_HEIGHT = 20
-    HOUSE_ROOF_HEIGHT = 10
+    HOUSE_ROOF_HEIGHT = 20
     HOUSE_DOOR_HEIGHT = 20
     HOUSE_DOOR_WIDTH = 10
     
@@ -32,9 +32,11 @@ class Renderer(object):
     WINDOW_HEIGHT_MULTIPLIER = 2
     WINDOW_ROW_HEIGHT = 20
     
-    TENT_WIDTH = 20
+    TENT_WIDTH = 40
     TENT_HEIGHT = 20
     TENT_COLOUR = (228, 219, 137)
+    TENT_X_SPACER = 30
+    TENT_Y_SPACER = 50
     
     BACKGROUND_COLOUR = (169,167,146)
     PACKAGE_BLOCK_COLOURS = [ (68,131,7), (141,153,109),(87,158,18), (96,149,84), (141,173,109), (89,158,22)]
@@ -143,7 +145,7 @@ class Renderer(object):
             
             #Build Tents Here
             freeMethods = module.getFreeMethods()
-            self.buildTents(topLeft, freeMethods)
+            self.buildTents(freeMethods)
             
             
             self.blocks.append(block)
@@ -176,16 +178,19 @@ class Renderer(object):
             
         freeMethods = int(module.getFreeMethods())
         if freeMethods != 0:
-            spacers = freeMethods * self.HOUSE_X_SPACER + self.HOUSE_X_SPACER
+            spacers = (freeMethods + 1) * self.TENT_X_SPACER
             freeMethodWidth = freeMethods * self.TENT_WIDTH
             totalWidth = totalWidth + spacers + freeMethodWidth
 
     
         if totalWidth != 0:
             totalWidth = totalWidth + self.HOUSE_X_SPACER
-            e = 0
+            if totalWidth < self.MIN_BLOCK_WIDTH:
+                totalWidth = self.MIN_BLOCK_WIDTH
         else:
-            e = 0
+            totalWidth = self.MIN_BLOCK_WIDTH
+            
+        e = 0
         
         lastHouseWidth = width
         tempTotalWidth = totalWidth
@@ -260,13 +265,14 @@ class Renderer(object):
     
     
     def buildHouses(self, topLeft, classes):
-        x_pos = topLeft[0] + self.HOUSE_X_SPACER
-        y_pos = topLeft[1] + self.HOUSE_Y_SPACER
+        self.blockCurrentX = topLeft[0] + self.HOUSE_X_SPACER
+        self.blockCurrentY = topLeft[1] + self.HOUSE_Y_SPACER
         for c in classes:
-            self.buildHouse(c, x_pos, y_pos)
-            #width = int(c.getWidth()) * self.HOUSE_WIDTH_MULTIPLIER
+            self.buildHouse(c, self.blockCurrentX, self.blockCurrentY)
             width = self.calculateHouseWidth(c)
-            x_pos = x_pos + width + self.HOUSE_X_SPACER
+            self.blockCurrentX = self.blockCurrentX + width + self.HOUSE_X_SPACER
+            
+        self.blockCurrentY = topLeft[1] + self.TENT_Y_SPACER
         return None
 
     def buildHouse(self, theClass, x, y):
@@ -308,11 +314,9 @@ class Renderer(object):
     def calculateHouseWidth(self, theClass):
         methods = theClass.getMethods()
         width = self.HOUSE_X_SPACER
-        print ('width at start', width)
         
         for method in methods:
             parameter = int(method.getParameters())
-            print ('parameter', parameter)
             width = width + self.HOUSE_X_SPACER + parameter
     
         width = width + self.HOUSE_X_SPACER
@@ -402,13 +406,11 @@ class Renderer(object):
                 tallestMethod = height
         return tallestMethod
     
-    def buildTents(self, topLeft, freeMethods):
-        x_pos = topLeft[0] + self.HOUSE_X_SPACER
-        y_pos = topLeft[1] + self.HOUSE_Y_SPACER
+    def buildTents(self, freeMethods):
         i = 0
         while i < freeMethods:
-            self.buildTent((x_pos, y_pos))
-            x_pos = x_pos + self.TENT_WIDTH + self.HOUSE_X_SPACER
+            self.buildTent((self.blockCurrentX, self.blockCurrentY))
+            self.blockCurrentX = self.blockCurrentX + self.TENT_X_SPACER * 2
             i = i + 1
         return None
     
@@ -573,11 +575,24 @@ class Renderer(object):
         topLeft = tent.getTopLeft()
         left = topLeft[0]
         top = topLeft[1]
+        baseline_y = top + self.TENT_HEIGHT
+        width = self.TENT_WIDTH
         
-        rect = (left, top, self.TENT_WIDTH, self.TENT_HEIGHT)
+        #draw the parallelogram
+        points = [(left + width/4, top), (left + width/4 * 3, top), (left + width/2, baseline_y), (left, baseline_y)]
+        pygame.draw.polygon(self.screen, self.TENT_COLOUR, points, 0)
+        pygame.draw.polygon(self.screen, (0,0,0), points, 1)
         
-        #temp
-        pygame.draw.rect(self.screen, self.TENT_COLOUR, rect, 0)
+        #draw the triangle
+        points2 = [(left + width/4 * 3, top),(left + width, baseline_y),(left + width/2, baseline_y)]
+        pygame.draw.polygon(self.screen, self.TENT_COLOUR, points2, 0)
+        pygame.draw.polygon(self.screen, (0,0,0), points2, 1)
+        
+        #draw the centre pole
+        pygame.draw.line(self.screen, self.HOUSE_DOOR_AND_ROOF_COLOUR, ((left + width/4 * 3) - 1, top), ((left + width/4 * 3) - 1, baseline_y), 2)
+                                                                    
+                                                                             
+       
         
         
         return None  
