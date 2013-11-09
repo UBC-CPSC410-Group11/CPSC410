@@ -16,8 +16,8 @@ class Renderer(object):
     BLOCK_X_SPACER = 20 #Space between the edge of the picture and the left and right sides of a block, or between blocks
     BLOCK_Y_SPACER = 40 #Space between the edge of the picture and the top or botom of a block, or between blocks
     BLOCK_HEIGHT = 100
+    BLOCK_CORNER_RADIUS = 15
     MIN_BLOCK_WIDTH = 80
-    HOUSE_HEIGHT_MULTIPLIER = 1 #Temporary
     NO_CLASS_BLOCK_WIDTH = 60
     HOUSE_MIN_HEIGHT = 20
     HOUSE_ROOF_HEIGHT = 20
@@ -72,9 +72,6 @@ class Renderer(object):
     windowCurrentRow = 0
     windowTallestWindow = 0
     
-    
-    
-    
     def __init__(self, packages):
         self.packages = packages
         
@@ -93,6 +90,7 @@ class Renderer(object):
         self.drawBlocks()
         self.drawHouses()
         self.drawTents()
+        
         
         #finalize drawing
         pygame.display.update()
@@ -133,11 +131,9 @@ class Renderer(object):
      
             x = blockRects[i][0]
             y = blockRects[i][1]
-            c = blockRects[i][2]
-            e = blockRects[i][3]
             
             topLeft = self.blockCalculatePosition(x, y)
-            block = Block(topLeft, x, y, colour, e)
+            block = Block(topLeft, x, y, colour)
             
             #Build Houses Here
             classes = module.getClasses()
@@ -147,22 +143,12 @@ class Renderer(object):
             freeMethods = module.getFreeMethods()
             self.buildTents(freeMethods)
             
-            
             self.blocks.append(block)
             
-            if (c == 1 and i != length - 1 and blockRects[i+1][2] != 1): #the block spans more than 1 row and the current rect is the last complete row
-                width = blockRects[i+1][0]
-                miniTopLeft = (topLeft[0], topLeft[1] + self.BLOCK_HEIGHT)
-                miniBlock = Block(miniTopLeft, width, self.BLOCK_Y_SPACER, colour)
-                self.blocks.append(miniBlock)
-            
             i = i + 1
-            #FOR TESTING - REMOVE LATER
-
         return None
     '''
-    Return a list of tuples (x,y,c, e) which are the width, height of the rectangles needed to represent a block, and c
-    is 1 if the rectangle occupies a complete row, and 0 if it occupies a partial row. e is 1 if the block is an empty lot, 0 otherwise
+    Return a list of tuples (x,y,) which are the width, height of the rectangles needed to represent a block
     '''
     def calculateBlockDimensions(self, module):
         dimensions = []
@@ -178,9 +164,9 @@ class Renderer(object):
             
         freeMethods = int(module.getFreeMethods())
         if freeMethods != 0:
-            spacers = (freeMethods + 1) * self.TENT_X_SPACER
+            spacers = (freeMethods) * self.TENT_X_SPACER
             freeMethodWidth = freeMethods * self.TENT_WIDTH
-            totalWidth = totalWidth + spacers + freeMethodWidth
+            totalWidth = totalWidth + spacers + freeMethodWidth - self.HOUSE_X_SPACER/2
 
     
         if totalWidth != 0:
@@ -190,18 +176,16 @@ class Renderer(object):
         else:
             totalWidth = self.MIN_BLOCK_WIDTH
             
-        e = 0
-        
         lastHouseWidth = width
         tempTotalWidth = totalWidth
         
         if (tempTotalWidth != 0):
             if (tempTotalWidth >= lastHouseWidth):
-                rect = (tempTotalWidth, self.BLOCK_HEIGHT, 0, e)
+                rect = (tempTotalWidth, self.BLOCK_HEIGHT)
             elif(lastHouseWidth > self.MIN_BLOCK_WIDTH):
-                rect = (lastHouseWidth, self.BLOCK_HEIGHT, 0, e)
+                rect = (lastHouseWidth, self.BLOCK_HEIGHT)
             else:
-                rect = (self.MIN_BLOCK_WIDTH, self.BLOCK_HEIGHT, 0, e)
+                rect = (self.MIN_BLOCK_WIDTH, self.BLOCK_HEIGHT)
             dimensions.append(rect)
         return dimensions
     
@@ -256,7 +240,7 @@ class Renderer(object):
         self.remainingRowWidth = self.remainingRowWidth - width - self.BLOCK_X_SPACER
         return None
     '''
-    update currentY and remainingRowHeight after the additoon of a new block in a new row
+    update currentY and remainingRowHeight after the addition of a new block in a new row
     '''
     def blockUpdateVerticalPosition(self, height):
         self.currentY = self.currentY + height + self.BLOCK_Y_SPACER
@@ -271,7 +255,8 @@ class Renderer(object):
             self.buildHouse(c, self.blockCurrentX, self.blockCurrentY)
             width = self.calculateHouseWidth(c)
             self.blockCurrentX = self.blockCurrentX + width + self.HOUSE_X_SPACER
-            
+        
+        #set the currentY to the position needed for building the tents
         self.blockCurrentY = topLeft[1] + self.TENT_Y_SPACER
         return None
 
@@ -285,7 +270,7 @@ class Renderer(object):
         if lines < self.HOUSE_MIN_HEIGHT:
             lines = self.HOUSE_MIN_HEIGHT
         
-        length = lines * self.HOUSE_HEIGHT_MULTIPLIER
+        length = lines
         
         if length < self.windowTallestWindow:
             length = self.windowTallestWindow + self.WINDOW_Y_SPACER * 4
@@ -356,8 +341,6 @@ class Renderer(object):
         height = int(method.getLines()) * self.WINDOW_HEIGHT_MULTIPLIER
         houseXStart = houseTopLeft[0]
         houseXEnd = houseXStart + houseWidth
-        houseYStart = houseTopLeft[1]
-        houseYEnd = houseYStart + houseHeight
         
         if self.WINDOW_ROW_HEIGHT > self.windowTallestWindow:
             rowHeight = self.WINDOW_ROW_HEIGHT
@@ -410,7 +393,7 @@ class Renderer(object):
         i = 0
         while i < freeMethods:
             self.buildTent((self.blockCurrentX, self.blockCurrentY))
-            self.blockCurrentX = self.blockCurrentX + self.TENT_X_SPACER * 2
+            self.blockCurrentX = self.blockCurrentX + self.TENT_WIDTH + self.TENT_X_SPACER
             i = i + 1
         return None
     
@@ -450,7 +433,8 @@ class Renderer(object):
         colour = block.getColour()
         rect = (left, top, width, length)
         
-        pygame.draw.rect(self.screen, colour, rect, 0)
+        #pygame.draw.rect(self.screen, colour, rect, 0)
+        self.drawFilledRoundedRect(self.screen, colour, rect, self.BLOCK_CORNER_RADIUS)
         
         return None     
     
@@ -591,9 +575,42 @@ class Renderer(object):
         #draw the centre pole
         pygame.draw.line(self.screen, self.HOUSE_DOOR_AND_ROOF_COLOUR, ((left + width/4 * 3) - 1, top), ((left + width/4 * 3) - 1, baseline_y), 2)
                                                                     
-                                                                             
-       
+        return None
+    '''
+    Draws a filled rounded rectangle on the given surface.
+    @radius: the radius of the corners as an integer
+    @rect: the coords of the top-left corner and the dimensions of the rectangle as (x,y,width,length)
+    '''
+    def drawFilledRoundedRect(self, surface, colour, rect, radius):
+        topLeftX = rect[0]
+        topLeftY = rect[1]
+        width = rect[2]
+        length = rect[3]
+    
+        #draw the main rectangle
+        mainTopLeftX = topLeftX + radius
+        mainTopLeftY = topLeftY
+        mainWidth = width - 2 * radius
+        mainLength = length
+        mainRect = (mainTopLeftX, mainTopLeftY, mainWidth, mainLength)
+        pygame.draw.rect(surface, colour, mainRect,0)
         
+        #draw the circles on the corners
+        circleTopLeft = (topLeftX + radius, topLeftY + radius)
+        circleTopRight = (topLeftX + width - radius, topLeftY + radius)
+        circleBottomLeft = (topLeftX + radius, topLeftY + length - radius)
+        circleBottomRight = (topLeftX + width - radius, topLeftY + length - radius)
+        
+        pygame.draw.circle(surface, colour, circleTopLeft, radius, 0)
+        pygame.draw.circle(surface, colour, circleTopRight, radius, 0)
+        pygame.draw.circle(surface, colour, circleBottomLeft, radius, 0)
+        pygame.draw.circle(surface, colour, circleBottomRight, radius, 0)
+        
+        #draw the side rectangles
+        leftRect = (topLeftX, topLeftY + radius, radius, length - 2 * radius)
+        rightRect = (topLeftX + width - radius, topLeftY + radius, radius, length - 2 * radius)
+        pygame.draw.rect(surface, colour, leftRect, 0)
+        pygame.draw.rect(surface, colour, rightRect, 0)
         
         return None  
     
@@ -695,14 +712,12 @@ class Block(object):
     length = 0
     width = 0
     colour = (0,0,0)
-    noClassBlock = 0
     
-    def __init__(self, topLeft, width, length, colour, noClassBlock):
+    def __init__(self, topLeft, width, length, colour):
         self.topLeft = topLeft
         self.length = length
         self.width = width
         self.colour = colour
-        self.noClassBlock = noClassBlock # 0 or 1
         
     def getTopLeft(self):
         return self.topLeft
