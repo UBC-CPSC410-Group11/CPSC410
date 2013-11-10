@@ -9,7 +9,7 @@ import pygame
 from random import randint
 
 class Renderer(object):
-    MAX_WIDTH = 1400
+    MAX_WIDTH = 1100
     MAX_HEIGHT = 800
     HOUSE_X_SPACER = 20
     HOUSE_Y_SPACER = 20
@@ -19,7 +19,7 @@ class Renderer(object):
     BLOCK_CORNER_RADIUS = 15
     MIN_BLOCK_WIDTH = 80
     NO_CLASS_BLOCK_WIDTH = 60
-    HOUSE_MIN_HEIGHT = 20
+    HOUSE_MIN_HEIGHT = 40
     HOUSE_ROOF_HEIGHT = 20
     HOUSE_DOOR_HEIGHT = 20
     HOUSE_DOOR_WIDTH = 10
@@ -30,7 +30,8 @@ class Renderer(object):
     WINDOW_MIN_WIDTH = 5
     WINDOW_WIDTH_MULTIPLIER = 20
     WINDOW_HEIGHT_MULTIPLIER = 2
-    WINDOW_ROW_HEIGHT = 20
+    
+    WINDOW_ROW_HEIGHT = 5
     
     TENT_WIDTH = 40
     TENT_HEIGHT = 20
@@ -265,17 +266,8 @@ class Renderer(object):
         self.windowTallestWindow = self.calculateTallestWindow(methods)
         
         name = theClass.getName()
-        lines = int(theClass.getLines())
         
-        if lines < self.HOUSE_MIN_HEIGHT:
-            lines = self.HOUSE_MIN_HEIGHT
-        
-        length = lines
-        
-        if length < self.windowTallestWindow:
-            length = self.windowTallestWindow + self.WINDOW_Y_SPACER * 4
-            
-        length = length + self.HOUSE_DOOR_HEIGHT
+        length = self.calculateHouseHeight(theClass)
         width = self.calculateHouseWidth(theClass)
         y_pos = self.calculateHouseYPosition(y, length)
         topLeft = (x, y_pos)
@@ -306,8 +298,38 @@ class Renderer(object):
     
         width = width + self.HOUSE_X_SPACER
         width = width / 2
-        width = width + (4 * self.HOUSE_X_SPACER)
+        width = width + (1 * self.HOUSE_X_SPACER)
         return width
+    
+    def calculateHouseHeight(self, theClass):
+        methods = theClass.getMethods()
+        numberOfMethods = len(methods)
+        firstHalf = int(numberOfMethods/2)
+        
+        if numberOfMethods % 2 != 0:
+            firstHalf = firstHalf + 1
+        
+        topMethods = methods[0:firstHalf]
+        bottomMethods = methods[firstHalf:numberOfMethods]
+        
+        tallestTopMethod = self.calculateTallestWindow(topMethods)
+        tallestBottomMethod = self.calculateTallestWindow(bottomMethods)
+
+        windowHeight = (tallestTopMethod + tallestBottomMethod)  + (self.WINDOW_X_SPACER * 4) +  self.HOUSE_DOOR_HEIGHT
+        
+        if windowHeight < self.HOUSE_MIN_HEIGHT:
+            windowHeight = self.HOUSE_MIN_HEIGHT
+        
+        lines = int(theClass.getLines())
+        if lines < self.HOUSE_MIN_HEIGHT:
+            lines = self.HOUSE_MIN_HEIGHT
+        
+        if lines > windowHeight:
+            height = lines
+        else:
+            height = windowHeight
+        
+        return height
     
     
     def buildWindows(self, methods, houseTopLeft, houseWidth, houseHeight):
@@ -317,7 +339,6 @@ class Renderer(object):
         self.sumWindowWidth = 0
         self.windowRows = self.calculateWindowRows(methods, houseWidth, houseHeight)
 
-        
         for method in methods:
             window = self.buildWindow(method, houseTopLeft, houseWidth, houseHeight)
             windows.append(window)
@@ -342,11 +363,7 @@ class Renderer(object):
         houseXStart = houseTopLeft[0]
         houseXEnd = houseXStart + houseWidth
         
-        if self.WINDOW_ROW_HEIGHT > self.windowTallestWindow:
-            rowHeight = self.WINDOW_ROW_HEIGHT
-        else:
-            rowHeight = self.windowTallestWindow
-    
+        rowHeight = self.windowTallestWindow
         #start at the top left, move right, then to new rows
         xSpaceRemaining = houseXEnd - self.windowCurrentX
 
