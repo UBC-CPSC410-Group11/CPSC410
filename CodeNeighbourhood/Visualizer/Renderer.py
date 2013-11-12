@@ -9,16 +9,17 @@ import pygame
 from random import randint
 
 class Renderer(object):
-    MAX_WIDTH = 1100
+    MAX_WIDTH = 1200
     MAX_HEIGHT = 800
+    
     HOUSE_X_SPACER = 20
     HOUSE_Y_SPACER = 20
-    BLOCK_X_SPACER = 20 #Space between the edge of the picture and the left and right sides of a block, or between blocks
-    BLOCK_Y_SPACER = 40 #Space between the edge of the picture and the top or botom of a block, or between blocks
+    BLOCK_X_SPACER = 20 
+    BLOCK_Y_SPACER = 40 
     BLOCK_HEIGHT = 100
     BLOCK_CORNER_RADIUS = 15
     MIN_BLOCK_WIDTH = 80
-    NO_CLASS_BLOCK_WIDTH = 60
+    
     HOUSE_MIN_HEIGHT = 40
     HOUSE_ROOF_HEIGHT = 20
     HOUSE_DOOR_HEIGHT = 20
@@ -30,7 +31,6 @@ class Renderer(object):
     WINDOW_MIN_WIDTH = 5
     WINDOW_WIDTH_MULTIPLIER = 20
     WINDOW_HEIGHT_MULTIPLIER = 2
-    
     WINDOW_ROW_HEIGHT = 5
     
     TENT_WIDTH = 40
@@ -41,7 +41,6 @@ class Renderer(object):
     
     BACKGROUND_COLOUR = (169,167,146)
     PACKAGE_BLOCK_COLOURS = [ (68,131,7), (141,153,109),(87,158,18), (96,149,84), (141,173,109), (89,158,22)]
-    RED_HOUSE_COLOUR = (255,0,0)
     HOUSE_COLOURS = [(0,174, 239), (255,255,255), (255, 242,0), (123, 114, 180), (255, 184, 107), (224, 133, 141), (121, 182, 176), (197, 232, 156)]
     HOUSE_DOOR_AND_ROOF_COLOUR = (115,99,87)
 
@@ -93,6 +92,27 @@ class Renderer(object):
         self.drawTents()
         
         
+        '''
+        #FOR TESTING:
+        #Validate Output Manually
+        for package in self.packages:
+            name = package.getName()
+            modules = package.getModules()
+            print ('Package Name', name)
+            print ('Number of Modules:', len(modules))
+            for module in modules:
+                print '+++++++++++++++++++++++++++'
+                classes = module.getClasses()
+                print ('Module Name: ', module.getName())
+                print ('Number of Classes', len(classes))
+                for aClass in classes:
+                    print ('----------------------------')
+                    print ('Name of Class: ', aClass.getName())
+                    methods = aClass.getMethods()
+                    print ('Number of Methods: ',len(methods))
+            print ('**************************')
+        '''
+            
         #finalize drawing
         pygame.display.update()
         control = 1
@@ -100,7 +120,7 @@ class Renderer(object):
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit(); sys.exit();
-        
+                    control = 0
         return None
     
     def buildNeighbourhood(self):
@@ -174,8 +194,8 @@ class Renderer(object):
             totalWidth = totalWidth + self.HOUSE_X_SPACER
             if totalWidth < self.MIN_BLOCK_WIDTH:
                 totalWidth = self.MIN_BLOCK_WIDTH
-        else:
-            totalWidth = self.MIN_BLOCK_WIDTH
+        # else:   #Uncomment this to show blocks with no classes or free methods
+        #     totalWidth = self.MIN_BLOCK_WIDTH
             
         lastHouseWidth = width
         tempTotalWidth = totalWidth
