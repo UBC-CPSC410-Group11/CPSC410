@@ -18,7 +18,7 @@ def main():
     outCalls = setInModuleBools(packages)
     
     
-    renderer1 = Renderer(packages)
+    renderer1 = Renderer(packages, outCalls)
     renderer1.renderNeighbourhood()
     return None
 

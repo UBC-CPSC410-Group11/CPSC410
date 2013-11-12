@@ -47,6 +47,7 @@ class Renderer(object):
     
     screen = {}
     packages = []
+    outCalls = []
     houses = []
     tents = []
     powerlines = []
@@ -72,8 +73,9 @@ class Renderer(object):
     windowCurrentRow = 0
     windowTallestWindow = 0
     
-    def __init__(self, packages):
+    def __init__(self, packages, outcalls):
         self.packages = packages
+        self.outCalls = outcalls
         
     '''
     Call this method to generate the output image
@@ -131,6 +133,8 @@ class Renderer(object):
                 self.blockColourCounter = 0
             else:
                 self.blockColourCounter = self.blockColourCounter + 1
+        print len(self.outCalls)
+        self.sortOutCalls()
         return None
 
     def buildPackage(self, package):
@@ -649,7 +653,19 @@ class Renderer(object):
         pygame.draw.rect(surface, colour, leftRect, 0)
         pygame.draw.rect(surface, colour, rightRect, 0)
         
-        return None  
+        return None
+    
+    def sortOutCalls(self):
+        for outcall in self.outCalls:
+            caller = str(outcall.getCaller())
+            callee = str(outcall.getCallee())
+            num_calls = int(outcall.getNumCalls())
+            inCall = bool(outcall.withinModule())
+            print ('Caller: ', caller)
+            print ('Callee: ', callee)
+            print ('numCalls: ', num_calls)
+            print ('In call?: ', inCall)
+        return None
     
 class House(object):
     name = ''
