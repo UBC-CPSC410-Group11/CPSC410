@@ -4,11 +4,10 @@ Created on 2013-10-22
 @author: jonrl33
 '''
 from xml.dom.minidom import parse, parseString
-from CustomTypes import Package, Module, Class, Method
+from CustomTypes import *
 
 class XMLParser(object):
     packages = []
-    
     def __init__(self, in_File):
         self.parseFile(in_File)
             
@@ -29,22 +28,23 @@ class XMLParser(object):
                             
                             for classNode in modNode.getElementsByTagName("Class"):
                                 className = classNode.getAttribute("name")
-                                classScore = classNode.getAttribute("score")
                                 classWidth = classNode.getAttribute("width")
                                 classLines = classNode.getAttribute("lines")
-                                cl = Class(className, classScore, classWidth, classLines)
+                                cl = Class(className, classWidth, classLines)
                                 if (classNode.hasChildNodes()):
                                     
                                     for methodNode in classNode.getElementsByTagName("Method"):
                                         mName = methodNode.getAttribute("name")
-                                        mScore = methodNode.getAttribute("score")
                                         mParam = methodNode.getAttribute("parameters")
                                         mLines = methodNode.getAttribute("lines")
-                                        meth = Method(mName, mScore, mParam, mLines)
+                                        mComLines = methodNode.getAttribute("comLines")
+                                        mDocLines = methodNode.getAttribute("docLines")
+                                        meth = Method(mName, mParam, mLines, mComLines, mDocLines)
                                         cl.addMethod(meth)
                                     
-                                    for methodNode in classNode.getElementsByTagName("Method"):
-                                        cl.addOutCall(methodNode.getAttribute("name"))
+                                    for outCallNode in classNode.getElementsByTagName("OutCall"):
+                                        for outCall in outCallNode.getElementsByTagName("ClassName"):
+                                            cl.addOutCall(cl.getName(), outCall.getAttribute("name"))
                                         
                                 mod.addClass(cl)
                         for classNode in modNode.getElementsByTagName("FreeMethod"):
@@ -56,16 +56,19 @@ class XMLParser(object):
 def main():
     parser = XMLParser("/Users/jonrl33/git/CPSC410/SampleInput.xml")
     pkgs = parser.getPackages()
+    setInModuleBools(pkgs)
     
     for p in pkgs:
         for m in p.getModules():
             for c in m.getClasses():
-                for meth in c.getMethods():
-                    print (m.getName(), c.getName(), meth.getName())
+                #for meth in c.getMethods():
+                #    print (m.getName(), c.getName(), meth.getName())
+                for out in c.getOutCalls():
+                    print(out.getCaller(), out.getCallee(), out.withinModule())
                 
-        
+       
         
 if __name__ == "__main__":
     main()
-'''        
+'''       
         
