@@ -1,8 +1,10 @@
- '''
+ 
+'''
 Created on 2013-10-22
 
 @author: jonrl33
 '''
+
 class Class(object):
     name = ""
     methods = []
