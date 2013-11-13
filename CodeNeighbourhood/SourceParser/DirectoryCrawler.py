@@ -8,7 +8,7 @@ import xml.etree.cElementTree as Tree
 import xml.dom.minidom as minidom
 import sys, os
 from ModuleParser import ModuleParser
-
+ 
 root = Tree.Element("CodeBase")
 
 

@@ -164,7 +164,7 @@ class ModuleParser():
             words = currLine.split()
             if (currLine.startswith('def') and (len(words) >= 2)):
                 methodName = ''
-                for j in range(0, len(words[1])):
+                for j in range(0, len(words[1])): 
                     if words[1][j] == '(':
                         break
                     methodName += words[1][j]                    

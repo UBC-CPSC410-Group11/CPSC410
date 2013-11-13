@@ -1,6 +1,6 @@
 '''
 Created on Oct 31, 2013
-
+     
 @author: Mike and Jon
 '''
 from SourceParser.DirectoryCrawler import directoryCrawl
