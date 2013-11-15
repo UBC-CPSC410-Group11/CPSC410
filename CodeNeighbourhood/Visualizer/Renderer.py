@@ -20,8 +20,8 @@ class Renderer(object):
     BLOCK_CORNER_RADIUS = 15
     MIN_BLOCK_WIDTH = 80
     
-    HOUSE_MIN_HEIGHT = 30
-    HOUSE_MIN_WIDTH = 50
+    HOUSE_MIN_HEIGHT = 15
+    HOUSE_MIN_WIDTH = 30
     HOUSE_ROOF_HEIGHT = 20
     HOUSE_DOOR_HEIGHT = 20
     HOUSE_DOOR_WIDTH = 10
@@ -44,7 +44,6 @@ class Renderer(object):
     HOUSE_COLOURS = [(0,174, 239), (255,255,255), (255, 242,0), (123, 114, 180), (255, 184, 107), (224, 133, 141), (121, 182, 176), (197, 232, 156), (0,174, 239), (0,174, 239), (0,174, 239)]
     HOUSE_DOOR_AND_ROOF_COLOUR = (115,99,87)
 
-    
     screen = {}
     packages = []
     outCalls = []
@@ -274,14 +273,14 @@ class Renderer(object):
     
     def calculateHouseWidth(self, theClass):
         methods = theClass.getMethods()
-        width = self.HOUSE_X_SPACER
+        width = self.WINDOW_X_SPACER
         for method in methods:
             parameter = int(method.getParameters())
-            #parameter = parameter * self.WINDOW_WIDTH_MULTIPLIER
-            width = width + self.WINDOW_X_SPACER + parameter * self.WINDOW_WIDTH_MULTIPLIER  
+            width = width + self.WINDOW_X_SPACER + (parameter * self.WINDOW_WIDTH_MULTIPLIER)
         
         if width < self.HOUSE_MIN_WIDTH:
             width = self.HOUSE_MIN_WIDTH
+        
         
         return width 
     
@@ -292,19 +291,17 @@ class Renderer(object):
         
         windowHeight = tallestMethod
         
-        if windowHeight < self.HOUSE_MIN_HEIGHT:
-            windowHeight = self.HOUSE_MIN_HEIGHT
-        
         lines = int(theClass.getLines())
-        if lines < self.HOUSE_MIN_HEIGHT:
-            lines = self.HOUSE_MIN_HEIGHT
-        
+
         if lines > windowHeight:
             height = lines
         else:
             height = windowHeight
         
-        return height + self.HOUSE_DOOR_HEIGHT + 2 * self.WINDOW_X_SPACER
+        height = height + self.HOUSE_DOOR_HEIGHT + 2 * self.WINDOW_Y_SPACER
+        if height < self.HOUSE_MIN_HEIGHT:
+            height = self.HOUSE_MIN_HEIGHT
+        return height
     
     
     def buildWindows(self, methods, houseTopLeft, houseWidth, houseHeight):
@@ -334,8 +331,6 @@ class Renderer(object):
     def calculateWindowDimensions (self, method, houseTopLeft, houseWidth, houseHeight):
         width = int(method.getParameters()) * self.WINDOW_WIDTH_MULTIPLIER
         height = int(method.getLines()) * self.WINDOW_HEIGHT_MULTIPLIER
-        houseXStart = houseTopLeft[0]
-        houseXEnd = houseXStart + houseWidth
         topLeft = (self.windowCurrentX, self.windowCurrentY)
         dimensions = (topLeft, width, height)
         self.windowCurrentX = self.windowCurrentX + width + self.WINDOW_X_SPACER
