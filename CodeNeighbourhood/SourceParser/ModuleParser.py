@@ -12,13 +12,14 @@ class ModuleParser():
     
     ''' the ModuleParser object receives the node of the xml tree to append to
         and the filePath of the file to be parsed ''' 
-    def __init__(self, moduleRoot, filePath):
+    def __init__(self, moduleRoot, filePath, classList):
         self.moduleRoot = moduleRoot
         f = open(filePath)
         self.code = f.readlines()
         f.close()
         self.lineCounter = len(self.code)
         self.filePath = filePath
+        self.classList = classList
     
     
     
@@ -164,7 +165,7 @@ class ModuleParser():
             words = currLine.split()
             if (currLine.startswith('def') and (len(words) >= 2)):
                 methodName = ''
-                for j in range(0, len(words[1])): 
+                for j in range(0, len(words[1])):
                     if words[1][j] == '(':
                         break
                     methodName += words[1][j]                    

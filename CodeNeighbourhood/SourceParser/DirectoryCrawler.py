@@ -8,14 +8,16 @@ import xml.etree.cElementTree as Tree
 import xml.dom.minidom as minidom
 import sys, os
 from ModuleParser import ModuleParser
- 
+from ClassLister import ClassLister
+
 root = Tree.Element("CodeBase")
+classList = []
 
 
 ''' write moduleName  to xml file, open filePath and parse module '''
 def crawlModule(filePath, moduleName, xmlParent):
     module = Tree.SubElement(xmlParent, "Module", {'name' : moduleName})
-    parser = ModuleParser(module, filePath)
+    parser = ModuleParser(module, filePath, classList)
     parser.parseCode()
     
 
@@ -32,6 +34,11 @@ def crawlPackage(dirPath, packageName):
 
 ''' open xml file, open code directory, for every package call crawlPackage() '''             
 def directoryCrawl(argv):
+    
+    classLister = ClassLister(argv)
+    classList = classLister.returnList()
+    
+    print classList
     
     for path, dirs, _ in os.walk(argv):
         for d in dirs:
