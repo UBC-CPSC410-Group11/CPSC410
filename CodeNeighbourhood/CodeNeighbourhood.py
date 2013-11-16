@@ -8,6 +8,7 @@ from Analyzer.CustomTypes import *
 
 from Visualizer.Renderer import Renderer
 from Analyzer.XMLParser import *
+from Analyzer.ScoreQuality import *
 
 def main():
     XMLString = directoryCrawl('pyntaCode')
@@ -16,7 +17,8 @@ def main():
     
     packages = XMLParser1.getPackages()
     outCalls = setInModuleBools(packages)
-    
+    qScore = ScoreQuality()
+    qScore.scorePackages(packages)
     
     renderer1 = Renderer(packages, outCalls)
     renderer1.renderNeighbourhood()

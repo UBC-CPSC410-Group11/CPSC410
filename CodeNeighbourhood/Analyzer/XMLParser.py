@@ -37,8 +37,8 @@ class XMLParser(object):
                                         mName = methodNode.getAttribute("name")
                                         mParam = methodNode.getAttribute("parameters")
                                         mLines = methodNode.getAttribute("lines")
-                                        mComLines = methodNode.getAttribute("comLines")
-                                        mDocLines = methodNode.getAttribute("docLines")
+                                        mComLines = methodNode.getAttribute("comments")
+                                        mDocLines = methodNode.getAttribute("documentation")
                                         meth = Method(mName, mParam, mLines, mComLines, mDocLines)
                                         cl.addMethod(meth)
                                     

@@ -83,6 +83,11 @@ class Method(object):
     def setScore(self, in_Score):
         self.score = in_Score
     
+    def getComments(self):
+        return self.commentLines
+    
+    def getDocLines(self):
+        return self.documentationLines
 
 
 class Module(object):
