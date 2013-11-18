@@ -179,7 +179,7 @@ class Renderer(object):
     
     BACKGROUND_COLOUR = (169,167,146)
     PACKAGE_BLOCK_COLOURS = [ (68,131,7), (141,153,109),(87,158,18), (96,149,84), (141,173,109), (49,158,55), (127,153,109)]
-    HOUSE_COLOURS = [(0,174, 239), (255,255,255), (255, 242,0), (123, 114, 180), (255, 184, 107), (224, 133, 141), (121, 182, 176), (197, 232, 156), (0,174, 239), (0,174, 239), (0,174, 239)]
+    HOUSE_COLOURS = [(0,0,0), (255,0,0), (220,20,70), (253,106,8), (247,255,0), (51,255,0), (6, 222, 222), (87,121,255), (228,222,255), (246,248,253)]
     HOUSE_DOOR_AND_ROOF_COLOUR = (115,99,87)
     
     FILE_EXTENSION = '.jpg'
@@ -494,6 +494,7 @@ class Renderer(object):
         y_pos = self.calculateHouseYPosition(y, length)
         topLeft = (x, y_pos)
         condition = int(theClass.getScore())
+        print condition
         theHouse = House(name, length, width, topLeft, condition)
         
 
@@ -632,7 +633,7 @@ class Renderer(object):
         top = topLeft[1]
         length = house.getLength()
         width = house.getWidth()
-        condition = house.getCondition()
+        condition = int(house.getCondition()) - 1
         colour = self.HOUSE_COLOURS[condition]
         rect = (left, top, width, length)
         pygame.draw.rect(self.screen, colour, rect, 0)

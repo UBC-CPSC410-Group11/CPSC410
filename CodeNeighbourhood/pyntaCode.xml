@@ -1,7 +1,6 @@
 <?xml version="1.0" ?>
 <CodeBase>
 	<Package name="apps">
-		<Module name="__init__.py"/>
 		<Module name="base.py">
 			<Class lines="1" name="PyntaAppBase">
 				<OutCall/>
@@ -50,8 +49,20 @@
 				<OutCall/>
 			</Class>
 		</Module>
+		<Module name="__init__.py"/>
 	</Package>
 	<Package name="conf">
+		<Module name="empty_settings.py"/>
+		<Module name="provider.py">
+			<Class lines="38" name="SettingsProvider">
+				<Method comments="8" documentation="0" lines="32" name="__new__" parameters="3"/>
+				<OutCall/>
+			</Class>
+			<Class lines="8" name="SettingsConsumer">
+				<Method comments="3" documentation="3" lines="5" name="__init__" parameters="3"/>
+				<OutCall/>
+			</Class>
+		</Module>
 		<Module name="__init__.py">
 			<Class lines="1" name="ConfigurationError">
 				<OutCall/>
@@ -70,20 +81,8 @@
 			</Class>
 			<FreeMethod name="setup_settings"/>
 		</Module>
-		<Module name="empty_settings.py"/>
-		<Module name="provider.py">
-			<Class lines="38" name="SettingsProvider">
-				<Method comments="8" documentation="0" lines="32" name="__new__" parameters="3"/>
-				<OutCall/>
-			</Class>
-			<Class lines="8" name="SettingsConsumer">
-				<Method comments="3" documentation="3" lines="5" name="__init__" parameters="3"/>
-				<OutCall/>
-			</Class>
-		</Module>
 	</Package>
 	<Package name="core">
-		<Module name="__init__.py"/>
 		<Module name="main.py">
 			<FreeMethod name="get_main_app"/>
 			<FreeMethod name="directoryCrawl"/>
@@ -158,9 +157,9 @@
 			</Class>
 			<FreeMethod name="url"/>
 		</Module>
+		<Module name="__init__.py"/>
 	</Package>
 	<Package name="storage">
-		<Module name="__init__.py"/>
 		<Module name="base.py">
 			<Class lines="48" name="Storage">
 				<Method comments="0" documentation="3" lines="2" name="settings_name" parameters="0"/>
@@ -211,9 +210,9 @@
 				<OutCall/>
 			</Class>
 		</Module>
+		<Module name="__init__.py"/>
 	</Package>
 	<Package name="templates">
-		<Module name="__init__.py"/>
 		<Module name="base.py">
 			<Class lines="9" name="Renderer">
 				<Method comments="0" documentation="0" lines="2" name="settings_name" parameters="0"/>
@@ -247,9 +246,9 @@
 				<OutCall/>
 			</Class>
 		</Module>
+		<Module name="__init__.py"/>
 	</Package>
 	<Package name="utils">
-		<Module name="__init__.py"/>
 		<Module name="collections.py">
 			<FreeMethod name="filter_dict"/>
 		</Module>
@@ -259,5 +258,6 @@
 		<Module name="importing.py">
 			<FreeMethod name="simple_import"/>
 		</Module>
+		<Module name="__init__.py"/>
 	</Package>
 </CodeBase>
