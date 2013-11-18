@@ -1,12 +1,15 @@
 '''
 Created on Oct 23, 2013
 
-@author: Mike
+@author: Mike Kelly
 '''
 from Analyzer.CustomTypes import *
 import pygame
 import sys
 
+'''
+A class to generate the main output
+'''
 class RendererFacade(object):
     packages = []
     imageDimensions = {}
@@ -21,11 +24,16 @@ class RendererFacade(object):
         imageGenerator = ImageGenerator(self.imageDimensions)
         imageGenerator.generateImage(renderer)
         return None
-
+'''
+A class to combine the images of each package into a single, main image
+'''
 class ImageGenerator(object):
-    imageDimensions = {}
+    
     NUMBER_OF_IMAGES_PER_ROW = 3
+    COLOUR_LEGEND_WIDTH = 40
+    COLOUR_LEGEND_HEIGHT = 200
 
+    imageDimensions = {}
     
     def __init__(self, imageDimensions):
         self.imageDimensions = imageDimensions
@@ -63,7 +71,10 @@ class ImageGenerator(object):
         
         scaledDimensions = self.calculateScaledImageSize(dimensions)
         scaledMainImage = pygame.transform.scale(mainImage, (scaledDimensions[0], scaledDimensions[1]))
-
+        
+        colourLegendImage = self.createColourLegend()
+        scaledMainImage.blit(colourLegendImage, (scaledDimensions[0] - ( 2 * self.COLOUR_LEGEND_WIDTH) - 54, scaledDimensions[1] - self.COLOUR_LEGEND_HEIGHT - 154))
+        
         screen.blit(scaledMainImage,(0,0))
         pygame.display.update()
         
@@ -144,6 +155,46 @@ class ImageGenerator(object):
         dimensions = ((imageWidth, imageHeight), maxRowHeight)
         return dimensions
     
+    def createColourLegend(self):
+        width = self.COLOUR_LEGEND_WIDTH
+        height = self.COLOUR_LEGEND_HEIGHT
+        
+        individualColourHeight = height / 10
+        
+        colours = Renderer.HOUSE_COLOURS
+        colours.reverse()
+        numberOfColours = len(colours)
+        
+        innerSurface = pygame.Surface((width,height))
+        innerSurface.fill((255,255,255))
+        
+        i = 0
+        currentY = 0
+        
+        while i < numberOfColours:
+            colourSurface = pygame.Surface((width, individualColourHeight))
+            currentY = i * individualColourHeight
+            colourSurface.fill(colours[i])
+            innerSurface.blit(colourSurface, (0, currentY))
+            i = i  + 1
+            
+        surface = pygame.Surface(((width * 2) + 30, height))
+        surface.fill(Renderer.BACKGROUND_COLOUR)
+        surface.blit(innerSurface, (width + 30, 0))
+        font = pygame.font.SysFont("monospace", 18)
+        labelOne = font.render(" BEST", 1, (0,0,0))
+        labelTwo = font.render(" WORST", 1, (0,0,0))
+        surface.blit(labelOne, (0,0))
+        surface.blit(labelTwo, (0, height - individualColourHeight))
+        
+        outerSurface = pygame.Surface(((width * 2) + 34, height + 4))
+        outerSurface.fill((0,0,0))
+        outerSurface.blit(surface, (2,2))
+        return outerSurface
+    '''
+    A class to generate a temp image representing all of the elements of a package, for each package
+    '''
+    
 class Renderer(object):
     MAX_WIDTH = 900
     MAX_HEIGHT = 900
@@ -182,6 +233,7 @@ class Renderer(object):
     PACKAGE_BLOCK_COLOURS = [ (68,131,7), (141,153,109),(87,158,18), (96,149,84), (141,173,109), (49,158,55), (127,153,109)]
     HOUSE_COLOURS = [(0,0,0), (255,0,0), (220,20,70), (253,106,8), (247,255,0), (51,255,0), (6, 222, 222), (87,121,255), (228,222,255), (246,248,253)]
     HOUSE_DOOR_AND_ROOF_COLOUR = (115,99,87)
+    WINDOW_COLOURS = [(179,242,239),(160,215,212),(111,165,165),(89,130,130),(70,102,102)]
     
     FILE_EXTENSION = '.jpg'
     
@@ -298,6 +350,9 @@ class Renderer(object):
         
         
         return None
+    '''
+    Call this method to populate the variable lists with instances of custom classes representing the various elements of the image
+    '''
     
     def buildNeighbourhood(self, package):
         self.buildPackage(package)
@@ -560,7 +615,9 @@ class Renderer(object):
         topLeft = dimensions[0]
         width = dimensions[1]
         height = dimensions[2]
-        colour = (179,242,239)
+        score = int(method.getScore())
+        colourIndex = int((score)/2)
+        colour = self.WINDOW_COLOURS[colourIndex]
         window = Window(topLeft, width, height, colour)
         return window
     '''
