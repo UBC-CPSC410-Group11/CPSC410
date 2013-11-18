@@ -95,7 +95,11 @@ class SampleClass2(object):
                 obj_to_save['_id'] = key
 
                 self.db[tag].save(obj_to_save)
-
+                
+    '''jfkds;jfkds;
+    fdssdgsdfdsfdsfsd
+    fjdksljfkldsafds''' 
+               
     def delete(self, tag, key):
         self.db[tag].remove(key)
 
