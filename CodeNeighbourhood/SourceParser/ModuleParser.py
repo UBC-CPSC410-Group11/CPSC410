@@ -12,13 +12,14 @@ class ModuleParser():
     
     ''' the ModuleParser object receives the node of the xml tree to append to
         and the filePath of the file to be parsed ''' 
-    def __init__(self, moduleRoot, filePath):
+    def __init__(self, moduleRoot, filePath, classList):
         self.moduleRoot = moduleRoot
         f = open(filePath)
         self.code = f.readlines()
         f.close()
         self.lineCounter = len(self.code)
         self.filePath = filePath
+        self.classList = classList[:]
     
     
     
@@ -30,15 +31,15 @@ class ModuleParser():
         return False
     
     
-    
+
     ''' Returns True if given line is a comment '''
     def isCommentLine(self, i):
         line = self.code[i].strip()
         commentSignCount = 0
-        if (line.startswith('#')) or (line.startswith('\'\'\'')):
+        if (line.startswith('#')) or (line.startswith('\'\'\'') or line.startswith('\"\"\"')):
             return True
         for j in range(0, i):
-            commentSignCount = commentSignCount + self.code[j].count('\'\'\'')
+            commentSignCount = commentSignCount + self.code[j].count("\'\'\'") + self.code[j].count('\"\"\"')
         if commentSignCount % 2 == 0:
             return False
         else:
@@ -86,7 +87,7 @@ class ModuleParser():
     
     ''' Count lines of documentation in front of a method '''
     def countDocumentation(self, begin):
-        i = begin
+        i = begin - 1
         while self.isEmpty(i-1):
             i = i - 1
         counter = 0
@@ -94,6 +95,7 @@ class ModuleParser():
             if(self.isCommentLine(i)):
                 counter = counter + 1
             i = i + 1
+
         return counter
         
         
@@ -108,15 +110,37 @@ class ModuleParser():
     
     
     
-    ''' Get width given class '''
-    def getClassWidth(self, begin, end):
-        return 5
-    
-    
-    
     ''' count the number of parameters in a method given its signature '''
     def countParameters(self, methodSignature):
-        return methodSignature.count(',') + 1 
+        return methodSignature.count(',') 
+    
+    
+    
+    ''' traces all variables and which class stands behind them and returns a list of them '''
+    def traceVariables(self, begin, end):
+        variableDictionary = {}
+        for i in range(begin, end):
+            for j in range(0, len(self.classList)):
+                searchString = self.classList[j]
+                falseSearchString = self.classList[j] + "."
+                
+                indexFalse = self.code[i].find(falseSearchString)
+                indexClass = self.code[i].find(searchString)
+                indexEqual = self.code[i].find("=")
+                
+                if (indexClass > -1 and indexEqual > -1 and indexClass > indexEqual and indexFalse == -1):
+                    onlySpaces = 1
+                    for k in range(indexEqual+1, indexClass):
+                        if(self.code[i][k] != ' '):
+                            onlySpaces = 0
+                    if onlySpaces ==1:
+                        variable = ''
+                        for k in range(0, indexEqual):
+                            if(self.code[i][k] != ' '):
+                                variable = variable + self.code[i][k]
+                        variableDictionary[variable] = searchString
+                                        
+        return variableDictionary
     
     
     
@@ -124,9 +148,17 @@ class ModuleParser():
         outcall are calls to other classes '''
     def parseClassOutCalls(self, classRoot, begin, end):
         outCallRoot = Tree.SubElement(classRoot, 'OutCall')
-        Tree.SubElement(outCallRoot, 'ClassName', {'name' : 'class name'})
-    
-    
+        variableDictionary = self.traceVariables(begin, end)
+        for k, v in variableDictionary.iteritems():
+            outCallElement = Tree.SubElement(outCallRoot, v)
+            count = 1
+            for i in range(begin, end):
+                searchString = k + "."
+                if(self.code[i].find(searchString) > -1):
+                    count = count + 1
+            outCallElement.set('count', str(count))
+              
+                    
     
     ''' Iterate through lines to find end of method and then parse it '''
     def parseMethod(self, methodRoot, begin, indentation):
@@ -164,7 +196,7 @@ class ModuleParser():
             words = currLine.split()
             if (currLine.startswith('def') and (len(words) >= 2)):
                 methodName = ''
-                for j in range(0, len(words[1])): 
+                for j in range(0, len(words[1])):
                     if words[1][j] == '(':
                         break
                     methodName += words[1][j]                    
@@ -174,14 +206,8 @@ class ModuleParser():
         self.parseClassOutCalls(classRoot, begin, end)
         
         lines = self.countLines(begin, end)
-        width = self.getClassWidth(begin, end)
         
         classRoot.set('lines', str(lines))
-        classRoot.set('width', str(width))
-        
-        
-        # TODO:   iterate from begin to end again (I know, probably not really efficient, but easier)
-        #         and look for methods or nested classes, then call parseMethod() or parseClass() again
 
         return end - 1
     
