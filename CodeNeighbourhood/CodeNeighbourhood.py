@@ -5,8 +5,8 @@ Created on Oct 31, 2013
 '''
 from SourceParser.DirectoryCrawler import directoryCrawl
 from Analyzer.CustomTypes import *
+from Visualizer.Renderer import RendererFacade
 
-from Visualizer.Renderer import Renderer
 from Analyzer.XMLParser import *
 from Analyzer.ScoreQuality import *
 
@@ -16,12 +16,16 @@ def main():
     XMLParser1 = XMLParser(XMLString)
     
     packages = XMLParser1.getPackages()
-    outCalls = setInModuleBools(packages)
+    setInModuleBools(packages)
     qScore = ScoreQuality()
     qScore.scorePackages(packages)
     
-    renderer1 = Renderer(packages, outCalls)
-    renderer1.renderNeighbourhood()
+
+
+   
+    rendererFacade = RendererFacade(packages)
+    rendererFacade.render()
+
     return None
 
 if __name__ == '__main__':

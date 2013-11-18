@@ -4,17 +4,155 @@ Created on Oct 23, 2013
 @author: Mike
 '''
 from Analyzer.CustomTypes import *
-import sys
 import pygame
-from random import randint
+import sys
 
+class RendererFacade(object):
+    packages = []
+    imageDimensions = {}
+    
+    
+    def __init__(self, packages):
+        self.packages = packages
+    
+    def render(self):
+        renderer = Renderer(self.packages)
+        self.imageDimensions = renderer.renderNeighbourhood()
+        imageGenerator = ImageGenerator(self.imageDimensions)
+        imageGenerator.generateImage(renderer)
+        return None
+
+class ImageGenerator(object):
+    imageDimensions = {}
+    NUMBER_OF_IMAGES_PER_ROW = 3
+
+    
+    def __init__(self, imageDimensions):
+        self.imageDimensions = imageDimensions
+
+    '''
+    Generates and displays the main output image
+    '''
+    def generateImage(self, renderer):
+        dimensionsAndRowHeight = self.calculateImageDimensions(self.NUMBER_OF_IMAGES_PER_ROW)
+        dimensions = dimensionsAndRowHeight[0]
+        rowHeight = dimensionsAndRowHeight[1]
+        mainImage = pygame.Surface(dimensions)
+        mainImage.fill(Renderer.BACKGROUND_COLOUR)
+        
+        screen = renderer.getScreen()
+        
+        currentX = 0
+        currentY = 0
+        i = 1
+
+        for imageDimension in self.imageDimensions:
+            imageIndex = imageDimension[0]
+            dimensions = imageDimension[1]
+            width = dimensions[0]
+            #height = dimensions[1]
+            image = self.loadImage(imageIndex)
+            mainImage.blit(image,(currentX,currentY))
+            if i < self.NUMBER_OF_IMAGES_PER_ROW:
+                currentX = currentX + width
+                i = i + 1
+            else:
+                currentX = 0
+                currentY = currentY + rowHeight
+                i = 1
+        
+        scaledDimensions = self.calculateScaledImageSize(dimensions)
+        scaledMainImage = pygame.transform.scale(mainImage, (scaledDimensions[0], scaledDimensions[1]))
+
+        screen.blit(scaledMainImage,(0,0))
+        pygame.display.update()
+        
+        control = 1
+        while control:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit(); sys.exit();
+                    control = 0
+    
+    '''
+    Returns a tuple (x,y) of dimensions for the largest possible image (with constrained proportions) within the output window.
+    '''          
+    def calculateScaledImageSize(self, dimensions):
+        windowWidth = Renderer.MAX_WIDTH
+        windowHeight = Renderer.MAX_HEIGHT
+        imageWidth = dimensions[0]
+        imageHeight = dimensions[1]
+        
+        widthDifference = windowWidth - imageWidth
+        heightDifference = windowHeight - imageHeight
+        
+        if widthDifference <= heightDifference:
+            newWidth = windowWidth 
+            newHeight = int((imageWidth/imageHeight) * newWidth)
+            newDimensions = (newWidth, newHeight)
+            
+        else:
+            newHeight = windowHeight
+            newWidth = int((imageHeight/imageWidth) * newHeight)
+            newDimensions = (newWidth, newHeight)
+            
+        return newDimensions
+        
+    '''
+    returns a pygame.Surface of a loaded image
+    '''
+    def loadImage(self, imageIndex):
+        index = str(imageIndex)
+        extension = Renderer.FILE_EXTENSION
+        fileName = 'temp_image' + index + extension
+        theImage = pygame.image.load(fileName)
+        
+        return theImage
+
+    '''
+    returns a tuple ((x,y),rh) of the main output image's width, height, and rowHeight
+    '''        
+    def calculateImageDimensions(self, numberOfImagesPerRow):
+        rowWidths = []
+        rowHeights = []
+        i = 0
+        widthAccumulator = 0
+        maxHeight = 0
+        for imageDimension in self.imageDimensions:
+            dimensions = imageDimension[1]
+            width = dimensions[0]
+            height = dimensions[1]
+            if i < numberOfImagesPerRow:
+                if height > maxHeight:
+                    maxHeight = height
+                widthAccumulator = widthAccumulator + width
+                i = i + 1
+            else:
+                rowWidths.append(widthAccumulator)
+                rowHeights.append(maxHeight)
+                maxHeight = 0
+                widthAccumulator = width
+                i = 1
+        rowHeights.append(maxHeight)
+        rowWidths.append(widthAccumulator)
+        imageWidth = max(rowWidths)
+        imageHeight = 0
+        for rh in rowHeights:
+            imageHeight = imageHeight + rh
+        
+        maxRowHeight = max(rowHeights)
+        dimensions = ((imageWidth, imageHeight), maxRowHeight)
+        return dimensions
+    
 class Renderer(object):
-    MAX_WIDTH = 1500
-    MAX_HEIGHT = 800
+    MAX_WIDTH = 900
+    MAX_HEIGHT = 900
+    
+    IMAGE_MIN_WIDTH = 300
     
     HOUSE_X_SPACER = 20
     HOUSE_Y_SPACER = 20
-    BLOCK_X_SPACER = 40 
+    BLOCK_X_SPACER = 20 
     BLOCK_Y_SPACER = 50 
     BLOCK_HEIGHT = 100
     BLOCK_CORNER_RADIUS = 15
@@ -40,25 +178,25 @@ class Renderer(object):
     TENT_Y_SPACER = 50
     
     BACKGROUND_COLOUR = (169,167,146)
-    PACKAGE_BLOCK_COLOURS = [ (68,131,7), (141,153,109),(87,158,18), (96,149,84), (141,173,109), (89,158,22)]
+    PACKAGE_BLOCK_COLOURS = [ (68,131,7), (141,153,109),(87,158,18), (96,149,84), (141,173,109), (49,158,55), (127,153,109)]
     HOUSE_COLOURS = [(0,174, 239), (255,255,255), (255, 242,0), (123, 114, 180), (255, 184, 107), (224, 133, 141), (121, 182, 176), (197, 232, 156), (0,174, 239), (0,174, 239), (0,174, 239)]
     HOUSE_DOOR_AND_ROOF_COLOUR = (115,99,87)
-
+    
+    FILE_EXTENSION = '.jpg'
+    
     screen = {}
     packages = []
-    outCalls = []
     houses = []
     tents = []
-    powerlines = []
-    clotheslines = []
-    fountain = {}
     blocks = []
     
-    currentX = BLOCK_X_SPACER * 2
+    surfaceWidth = 0
+    surfaceHeight = 0
+    
+    currentX = BLOCK_X_SPACER
     currentY = BLOCK_Y_SPACER * 2
     rowWidth = 0
     remainingRowWidth = 0
-    rightSideRowStart = 0
     remainingRowHeight = 0
     blockColourCounter = 0
     lastHouseColourIndex = 0
@@ -69,45 +207,146 @@ class Renderer(object):
     windowCurrentRow = 0
     windowTallestWindow = 0
     
-    def __init__(self, packages, outcalls):
+    imageDimensions = []
+    
+    def __init__(self, packages):
         self.packages = packages
-        self.outCalls = outcalls
-        
+    
+    def getScreen(self):
+        return self.screen
+      
     '''
-    Call this method to generate the output image
+    Renders a neighbourhood for each package and saves it to a temp file 
     '''
     def renderNeighbourhood(self):
-        self.rowWidth = self.MAX_WIDTH - 2 * self.BLOCK_X_SPACER
-        self.remainingRowWidth = self.rowWidth
-        self.rowHeight = (self.MAX_HEIGHT - 2 * self.BLOCK_Y_SPACER)
-        self.remainingRowHeight = self.rowHeight
-        self.rightSideRowStart = self.BLOCK_X_SPACER * 2 + self.rowWidth
-        self.buildNeighbourhood()
+        
         self.initDrawing()
-        #draw individual elements here
-        self.drawBlocks()
-        self.drawHouses()
-        self.drawTents()
+        
+        i = 0
+        numberOfPackages = len(self.packages)
+        
+        while i < numberOfPackages:
+            self.resetScreen()
+            dimensions = self.calculateImageDimensions(self.packages[i])
+            self.surfaceWidth = dimensions[0]
+            self.surfaceHeight = dimensions[1]
+            if self.surfaceWidth < self.IMAGE_MIN_WIDTH:
+                self.surfaceWidth = self.IMAGE_MIN_WIDTH
+            self.resetAllVariables()
+            numberOfBlockColours = len(self.PACKAGE_BLOCK_COLOURS)
+            self.blockColourCounter = i
+            if self.blockColourCounter > numberOfBlockColours:
+                self.blockColourCounter = 0
+            self.buildNeighbourhood(self.packages[i])
+            self.drawBlocks()
+            self.drawHouses()
+            self.drawTents()
+            self.saveScreen(i)
+            imageDimension = (i, (self.surfaceWidth,self.surfaceHeight))
+            self.imageDimensions.append(imageDimension)
             
-        #finalize drawing
-        pygame.display.update()
-        control = 1
-        while control:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit(); sys.exit();
-                    control = 0
+            i = i + 1
+        
+        return self.imageDimensions
+    
+    def initDrawing(self):
+        pygame.init()
+        self.screen = pygame.display.set_mode((self.MAX_WIDTH,self.MAX_HEIGHT))
+        pygame.display.set_caption('Code Neighbourhood')
+        
         return None
     
-    def buildNeighbourhood(self):
-        
-        for package in self.packages:
-            self.buildPackage(package)
-            if self.blockColourCounter == 5:
-                self.blockColourCounter = 0
-            else:
-                self.blockColourCounter = self.blockColourCounter + 1
+    def resetScreen(self):
+        screen2 = pygame.Surface((self.MAX_WIDTH,self.MAX_HEIGHT))
+        screen2.fill(self.BACKGROUND_COLOUR)
+        self.screen.blit(screen2,(0,0))
         return None
+    
+    def saveScreen(self, i):
+        extension = self.FILE_EXTENSION
+        strId = str(i)
+        fileName = 'temp_image'+ strId + extension
+        saveScreen = pygame.Surface((self.surfaceWidth, self.surfaceHeight))
+        saveScreen.blit(self.screen, (0,0), (0,0,self.surfaceWidth, self.surfaceHeight))
+        pygame.image.save(saveScreen, fileName)
+                   
+    
+    def resetAllVariables(self):
+        self.currentX = self.BLOCK_X_SPACER
+        self.currentY = self.BLOCK_Y_SPACER * 2
+        self.rowWidth = 0
+        self.remainingRowWidth = 0
+        self.remainingRowHeight = 0
+        self.blockColourCounter = 0
+        self.lastHouseColourIndex = 0
+        self.blockCurrentX = 0
+        self.blockCurrentY = 0
+        self.windowCurrentX = 0
+        self.windowCurrentY = 0
+        self.windowCurrentRow = 0
+        self.windowTallestWindow = 0
+        
+        self.houses = []
+        self.tents = []
+        self.blocks = []
+        
+        self.rowWidth = self.surfaceWidth - 2 * self.BLOCK_X_SPACER
+        self.remainingRowWidth = self.rowWidth
+        self.rowHeight = (self.surfaceHeight - 2 * self.BLOCK_Y_SPACER)
+        self.remainingRowHeight = self.rowHeight
+        
+        
+        return None
+    
+    def buildNeighbourhood(self, package):
+        self.buildPackage(package)
+        return None
+    
+    def calculateImageDimensions(self, package):
+        modules = package.getModules()
+        blockRects = []
+        for module in modules:
+            blockRect = self.calculateBlockDimensions(module)
+            blockRects.append(blockRect)
+        
+        width = self.calculateImageWidth(blockRects)
+        height = self.calculateImageHeight(blockRects, width)
+        return (width, height)
+    
+    def calculateImageWidth(self, blockRects):
+        widestBlock = 0
+        sumOfWidths = 0
+        for br in blockRects:
+            if len(br) > 0:
+                x_val = br[0][0]
+                sumOfWidths = sumOfWidths + x_val
+                if x_val > widestBlock:
+                    widestBlock = x_val
+        width = widestBlock + 4 * self.BLOCK_X_SPACER
+        return width
+    
+    def calculateImageHeight(self, blockRects, width):
+        numberOfRows = 1
+        blockWidths = []
+        widthRemaining = width - self.BLOCK_X_SPACER * 2
+        
+        for br in blockRects:
+            if len(br) > 0:
+                blockWidth = br[0][0]
+                blockWidths.append(blockWidth)
+          
+        i = 0
+        while i < len(blockWidths):
+            widthRemaining = widthRemaining - blockWidths[i] -  self.BLOCK_X_SPACER
+            if i != len(blockWidths) - 1:
+                if widthRemaining < blockWidths[i + 1]:
+                    numberOfRows = numberOfRows + 1
+                    widthRemaining = width - self.BLOCK_X_SPACER * 2
+            
+            i = i + 1
+        
+        height = 1 * self.BLOCK_Y_SPACER + numberOfRows * self.BLOCK_HEIGHT + (numberOfRows) * self.BLOCK_Y_SPACER
+        return height
 
     def buildPackage(self, package):
         #Packages are implicitly represented in the output as blocks which are close together
@@ -358,17 +597,7 @@ class Renderer(object):
         self.tents.append(tent)
         return None
     
-    '''
-    Initialize the output window
-    '''
-    def initDrawing(self):
-        pygame.init()
-        pygame.display.set_caption('Code Neighbourhood')
-        self.screen = pygame.display.set_mode((self.MAX_WIDTH, self.MAX_HEIGHT))
-        self.screen.fill(self.BACKGROUND_COLOUR)
-    
-        return None
-    
+
     '''
     Render the Blocks
     '''
@@ -388,8 +617,6 @@ class Renderer(object):
         width = block.getWidth()
         colour = block.getColour()
         rect = (left, top, width, length)
-        
-        #pygame.draw.rect(self.screen, colour, rect, 0)
         self.drawFilledRoundedRect(self.screen, colour, rect, self.BLOCK_CORNER_RADIUS)
         
         return None     
@@ -462,18 +689,6 @@ class Renderer(object):
         
         return None
     
-    def drawFountain(self, fountain):
-        #TODO Implement
-        return None     
-
-    def drawClothesline(self, clothesline):
-        #TODO Implement
-        return None
-    
-    def drawPowerline(self, powerline):
-        #TODO Implement
-        return None
-    
     def drawTents(self):
         for tent in self.tents:
             self.drawTent(tent)
@@ -500,7 +715,7 @@ class Renderer(object):
                                                                     
         return None
     '''
-    Draws a filled rounded rectangle on the given surface.
+    Draws a filled rounded rectangle on the given screen.
     @radius: the radius of the corners as an integer
     @rect: the coords of the top-left corner and the dimensions of the rectangle as (x,y,width,length)
     '''
