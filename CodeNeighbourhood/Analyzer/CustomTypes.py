@@ -24,12 +24,12 @@ class Class(object):
     def addMethod(self, in_Method):
         self.methods.append(in_Method)
         
-    def addOutCall(self, in_Caller, in_Callee):
+    def addOutCall(self, in_Caller, in_Callee, in_Count):
         for outCall in self.outCalls:
             if ((outCall.getCaller() == in_Caller) and (outCall.getCallee() == in_Callee)):
                 outCall.addCall()
                 return
-        self.outCalls.append(OutCall(in_Caller, in_Callee))
+        self.outCalls.append(OutCall(in_Caller, in_Callee, in_Count))
         
     
     def getOutCalls(self):
@@ -138,10 +138,10 @@ class OutCall(object):
     numCalls = ""
     inModuleCall = ""
     
-    def __init__(self, in_Caller, in_Callee):
+    def __init__(self, in_Caller, in_Callee, in_Count):
         self.caller = in_Caller
         self.callee = in_Callee
-        self.numCalls = 1
+        self.numCalls = in_Count
         self.inModuleCall = ""
         
     def addCall(self):

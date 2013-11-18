@@ -17,7 +17,7 @@
 				<Method comments="0" documentation="0" lines="2" name="post" parameters="1"/>
 				<Method comments="0" documentation="0" lines="2" name="head" parameters="1"/>
 				<OutCall>
-					<LazySession count="3"/>
+					<ClassName count="3" name="LazySession"/>
 				</OutCall>
 			</Class>
 		</Module>
@@ -37,8 +37,8 @@
 				<Method comments="0" documentation="0" lines="4" name="do_update" parameters="1"/>
 				<Method comments="0" documentation="0" lines="3" name="do_delete" parameters="1"/>
 				<OutCall>
-					<Paginator count="2"/>
-					<Anydbm count="9"/>
+					<ClassName count="2" name="Paginator"/>
+					<ClassName count="9" name="Anydbm"/>
 				</OutCall>
 			</Class>
 		</Module>
@@ -50,9 +50,11 @@
 			</Class>
 		</Module>
 		<Module name="__init__.py"/>
+		<Module name="__init__.pyc"/>
 	</Package>
 	<Package name="conf">
 		<Module name="empty_settings.py"/>
+		<Module name="empty_settings.pyc"/>
 		<Module name="provider.py">
 			<Class lines="38" name="SettingsProvider">
 				<Method comments="8" documentation="0" lines="32" name="__new__" parameters="3"/>
@@ -63,6 +65,7 @@
 				<OutCall/>
 			</Class>
 		</Module>
+		<Module name="provider.pyc"/>
 		<Module name="__init__.py">
 			<Class lines="1" name="ConfigurationError">
 				<OutCall/>
@@ -81,12 +84,14 @@
 			</Class>
 			<FreeMethod name="setup_settings"/>
 		</Module>
+		<Module name="__init__.pyc"/>
 	</Package>
 	<Package name="core">
 		<Module name="main.py">
 			<FreeMethod name="get_main_app"/>
 			<FreeMethod name="directoryCrawl"/>
 		</Module>
+		<Module name="main.pyc"/>
 		<Module name="paginator.py">
 			<Class lines="12" name="_PageIterator">
 				<Method comments="0" documentation="0" lines="3" name="__init__" parameters="2"/>
@@ -104,7 +109,7 @@
 			<Class lines="9" name="Paginator">
 				<Method comments="0" documentation="0" lines="9" name="__init__" parameters="2"/>
 				<OutCall>
-					<_PageIterator count="1"/>
+					<ClassName count="1" name="_PageIterator"/>
 				</OutCall>
 			</Class>
 			<Class lines="12" name="Page">
@@ -114,9 +119,11 @@
 				<OutCall/>
 			</Class>
 		</Module>
+		<Module name="paginator.pyc"/>
 		<Module name="server.py">
 			<FreeMethod name="serve"/>
 		</Module>
+		<Module name="server.pyc"/>
 		<Module name="session.py">
 			<Class lines="6" name="SessionBase">
 				<Method comments="0" documentation="0" lines="5" name="__new__" parameters="3"/>
@@ -143,7 +150,7 @@
 				<Method comments="0" documentation="0" lines="2" name="__setitem__" parameters="2"/>
 				<Method comments="0" documentation="0" lines="2" name="__delitem__" parameters="1"/>
 				<OutCall>
-					<Session count="1"/>
+					<ClassName count="1" name="Session"/>
 				</OutCall>
 			</Class>
 		</Module>
@@ -157,7 +164,9 @@
 			</Class>
 			<FreeMethod name="url"/>
 		</Module>
+		<Module name="urls.pyc"/>
 		<Module name="__init__.py"/>
+		<Module name="__init__.pyc"/>
 	</Package>
 	<Package name="storage">
 		<Module name="base.py">
@@ -211,6 +220,7 @@
 			</Class>
 		</Module>
 		<Module name="__init__.py"/>
+		<Module name="__init__.pyc"/>
 	</Package>
 	<Package name="templates">
 		<Module name="base.py">
@@ -247,17 +257,22 @@
 			</Class>
 		</Module>
 		<Module name="__init__.py"/>
+		<Module name="__init__.pyc"/>
 	</Package>
 	<Package name="utils">
 		<Module name="collections.py">
 			<FreeMethod name="filter_dict"/>
 		</Module>
+		<Module name="collections.pyc"/>
 		<Module name="decorators.py">
 			<FreeMethod name="add_first_arg"/>
 		</Module>
+		<Module name="decorators.pyc"/>
 		<Module name="importing.py">
 			<FreeMethod name="simple_import"/>
 		</Module>
+		<Module name="importing.pyc"/>
 		<Module name="__init__.py"/>
+		<Module name="__init__.pyc"/>
 	</Package>
 </CodeBase>

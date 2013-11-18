@@ -44,7 +44,7 @@ class XMLParser(object):
                                     
                                     for outCallNode in classNode.getElementsByTagName("OutCall"):
                                         for outCall in outCallNode.getElementsByTagName("ClassName"):
-                                            cl.addOutCall(cl.getName(), outCall.getAttribute("name"))
+                                            cl.addOutCall(cl.getName(), outCall.getAttribute("name"), outCall.getAttribute("count"))
                                         
                                 mod.addClass(cl)
                         for classNode in modNode.getElementsByTagName("FreeMethod"):

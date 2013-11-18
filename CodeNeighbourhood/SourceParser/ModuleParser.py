@@ -150,7 +150,8 @@ class ModuleParser():
         outCallRoot = Tree.SubElement(classRoot, 'OutCall')
         variableDictionary = self.traceVariables(begin, end)
         for k, v in variableDictionary.iteritems():
-            outCallElement = Tree.SubElement(outCallRoot, v)
+            outCallElement = Tree.SubElement(outCallRoot, 'ClassName')
+            outCallElement.set('name', v)
             count = 1
             for i in range(begin, end):
                 searchString = k + "."

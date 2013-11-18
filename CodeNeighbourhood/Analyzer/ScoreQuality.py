@@ -60,7 +60,7 @@ class ScoreQuality(object):
         paramScore = 0
         
         if (mParams <= 2):
-            paramScore = 3
+            paramScore = 4
         elif(mParams <= 3):
             paramScore = 2
         elif(mParams <= 4):
@@ -78,11 +78,11 @@ class ScoreQuality(object):
         percent = int(float(100*coms)/int(mLines))
         score = 0
         if (percent == 0):
-            score = 3
-        elif (percent <= 10):
             score = 2
-        elif (percent <= 20):
+        elif (percent <= 10):
             score = 1
+        elif (percent <= 20):
+            score = 0
         return score
     
     # Accepts a list of Methods
@@ -110,16 +110,14 @@ class ScoreQuality(object):
         excessiveCalls = 0
         
         for out in outcalls:
-            if ((out.withinModule() == False) and (out.getNumCalls() >= 5)):
+            if ((out.withinModule() == False) and (out.getNumCalls() >= 4)):
                 excessiveCalls = excessiveCalls + 1
+        score = 0
         if (excessiveCalls == 0):
-            return 3
-        elif (excessiveCalls >= 1 and excessiveCalls <= 2):
-            return 2
-        elif (excessiveCalls == 3):
-            return 1
-        else: 
-            return 0
+            score = 1
+        elif (excessiveCalls > 0): 
+            score = 0
+        return score
     
     # Accepts a list of Method length integers
     # Returns an integer score from 0 to 3 based on length of the longest method
@@ -129,14 +127,16 @@ class ScoreQuality(object):
         for length in lengths:
             if (length > biggest):
                 biggest = length
-        if (biggest > 1000):
+        if (biggest > 500):
             return 0
-        elif (biggest > 600):
-            return 1
-        elif (biggest > 400):
+        elif (biggest > 300):
             return 2
-        else:
+        elif (biggest > 200):
             return 3
+        elif (biggest > 100):
+            return 4
+        else:
+            return 5
                 
     # Accepts a list of integers of Method lengths
     # returns an integer score from 0 to 3 based on the skew of method lengths    
@@ -147,8 +147,10 @@ class ScoreQuality(object):
         skew = float(mean - float(median))/sd
         
         score = 0
-        if (-0.1 <= skew <= 0.1):
-            score = 3
+        if (-0.05 <= skew <= 0.05):
+            score = 5
+        elif (-0.1 <= skew <= 0.1):
+            score = 4
         elif (-0.2 <= skew <= 0.2):
             score = 2
         elif (-0.3 <= skew <= 0.3):

@@ -170,6 +170,7 @@ class Renderer(object):
     WINDOW_MIN_WIDTH = 5
     WINDOW_WIDTH_MULTIPLIER = 10
     WINDOW_HEIGHT_MULTIPLIER = 3
+    WINDOW_WIDTH_BONUS = 10
     
     TENT_WIDTH = 40
     TENT_HEIGHT = 20
@@ -494,10 +495,7 @@ class Renderer(object):
         y_pos = self.calculateHouseYPosition(y, length)
         topLeft = (x, y_pos)
         condition = int(theClass.getScore())
-        print condition
         theHouse = House(name, length, width, topLeft, condition)
-        
-
         windows = self.buildWindows(methods, topLeft, width, length)
         theHouse.setWindows(windows)
         self.houses.append(theHouse)
@@ -516,7 +514,7 @@ class Renderer(object):
         width = self.WINDOW_X_SPACER
         for method in methods:
             parameter = int(method.getParameters())
-            width = width + self.WINDOW_X_SPACER + (parameter * self.WINDOW_WIDTH_MULTIPLIER)
+            width = width + self.WINDOW_X_SPACER + (parameter * self.WINDOW_WIDTH_MULTIPLIER) + self.WINDOW_WIDTH_BONUS
         
         if width < self.HOUSE_MIN_WIDTH:
             width = self.HOUSE_MIN_WIDTH
@@ -569,7 +567,7 @@ class Renderer(object):
     returns a tuple ((left, top), width, height) of the dimensions and position of a window
     '''
     def calculateWindowDimensions (self, method, houseTopLeft, houseWidth, houseHeight):
-        width = int(method.getParameters()) * self.WINDOW_WIDTH_MULTIPLIER
+        width = (int(method.getParameters()))* self.WINDOW_WIDTH_MULTIPLIER + self.WINDOW_WIDTH_BONUS
         height = int(method.getLines()) * self.WINDOW_HEIGHT_MULTIPLIER
         topLeft = (self.windowCurrentX, self.windowCurrentY)
         dimensions = (topLeft, width, height)
@@ -633,7 +631,7 @@ class Renderer(object):
         top = topLeft[1]
         length = house.getLength()
         width = house.getWidth()
-        condition = int(house.getCondition()) - 1
+        condition = int(house.getCondition())
         colour = self.HOUSE_COLOURS[condition]
         rect = (left, top, width, length)
         pygame.draw.rect(self.screen, colour, rect, 0)
