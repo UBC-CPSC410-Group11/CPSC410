@@ -235,7 +235,6 @@ class Renderer(object):
             self.resetAllVariables()
             numberOfBlockColours = len(self.PACKAGE_BLOCK_COLOURS)
             self.blockColourCounter = i
-            print i
             if self.blockColourCounter > numberOfBlockColours:
                 self.blockColourCounter = 0
             self.buildNeighbourhood(self.packages[i])
