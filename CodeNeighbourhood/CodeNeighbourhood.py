@@ -20,9 +20,6 @@ def main():
     qScore = ScoreQuality()
     qScore.scorePackages(packages)
     
-
-
-   
     rendererFacade = RendererFacade(packages)
     rendererFacade.render()
 

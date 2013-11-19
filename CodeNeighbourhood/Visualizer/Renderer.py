@@ -252,7 +252,7 @@ class Renderer(object):
     surfaceHeight = 0
     
     currentX = BLOCK_X_SPACER
-    currentY = BLOCK_Y_SPACER * 2
+    currentY = BLOCK_Y_SPACER + 20
     rowWidth = 0
     remainingRowWidth = 0
     remainingRowHeight = 0
@@ -418,7 +418,7 @@ class Renderer(object):
     
     def resetAllVariables(self):
         self.currentX = self.BLOCK_X_SPACER
-        self.currentY = self.BLOCK_Y_SPACER * 2
+        self.currentY = self.BLOCK_Y_SPACER + 20
         self.rowWidth = 0
         self.remainingRowWidth = 0
         self.remainingRowHeight = 0
@@ -470,7 +470,7 @@ class Renderer(object):
                 sumOfWidths = sumOfWidths + x_val
                 if x_val > widestBlock:
                     widestBlock = x_val
-        width = widestBlock + 4 * self.BLOCK_X_SPACER
+        width = (widestBlock + 4 * self.BLOCK_X_SPACER) + 10
         return width
     
     def calculateImageHeight(self, blockRects, width):
@@ -493,7 +493,7 @@ class Renderer(object):
             
             i = i + 1
         
-        height = 2 * self.BLOCK_Y_SPACER + numberOfRows * self.BLOCK_HEIGHT + (numberOfRows) * self.BLOCK_Y_SPACER
+        height = (self.BLOCK_Y_SPACER + numberOfRows * self.BLOCK_HEIGHT + (numberOfRows) * self.BLOCK_Y_SPACER) + 10
         return height
 
     def buildPackage(self, package):
