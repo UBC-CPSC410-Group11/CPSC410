@@ -237,6 +237,11 @@ class Renderer(object):
     
     FILE_EXTENSION = '.jpg'
     
+    ROAD_WIDTH = 25
+    ROAD_LINE_HEIGHT = 20
+    ROAD_LINE_WIDTH = 5
+    ROAD_LINE_COLOUR = (215,215,215)
+    
     screen = {}
     packages = []
     houses = []
@@ -321,7 +326,94 @@ class Renderer(object):
         fileName = 'temp_image'+ strId + extension
         saveScreen = pygame.Surface((self.surfaceWidth, self.surfaceHeight))
         saveScreen.blit(self.screen, (0,0), (0,0,self.surfaceWidth, self.surfaceHeight))
-        pygame.image.save(saveScreen, fileName)
+        
+        roadSurface = pygame.Surface((self.surfaceWidth + 2 * self.ROAD_WIDTH, self.surfaceHeight + 2 * self.ROAD_WIDTH))
+        roadSurface.fill((80,80,80))
+        roadSurfaceWithLines = self.drawDashedRoadLines(roadSurface, self.surfaceWidth + 2 * self.ROAD_WIDTH, self.surfaceHeight + 2 * self.ROAD_WIDTH)
+        roadSurfaceWithLines.blit(saveScreen, (self.ROAD_WIDTH, self.ROAD_WIDTH), (0,0,self.surfaceWidth, self.surfaceHeight))
+        pygame.image.save(roadSurfaceWithLines, fileName)
+        
+    def drawDashedRoadLines(self, surface, width, height):
+        halfRoadWidth = self.ROAD_WIDTH/2
+        verticalLinePoints = self.calculateVerticalLinePoints(width, height, halfRoadWidth)
+        horizontalLinePoints = self.calculateHorizontalLinePoints(width, height, halfRoadWidth)
+        surfaceWithLines = self.drawRoadLines(surface, verticalLinePoints)
+        surfaceWithLines = self.drawRoadLines(surfaceWithLines, horizontalLinePoints)
+        return surfaceWithLines
+    
+    def calculateVerticalLinePoints(self, width, height, halfRoadWidth):
+        verticalLinePoints = []
+        numberOfLineSegments = ((height / self.ROAD_LINE_HEIGHT) / 2) - 1
+        i = 0
+        currentX = halfRoadWidth
+        currentY = self.ROAD_WIDTH
+        while i < numberOfLineSegments:
+            startPoint = (currentX, currentY)
+            endPoint  = (currentX, currentY + self.ROAD_LINE_HEIGHT)
+            
+            currentY = currentY + (2 * self.ROAD_LINE_HEIGHT)
+            
+            points = (startPoint, endPoint)
+            verticalLinePoints.append(points)
+            
+            i = i + 1
+            
+        i = 0
+        currentX = width - halfRoadWidth
+        currentY = self.ROAD_WIDTH
+        while i < numberOfLineSegments:
+            startPoint = (currentX, currentY)
+            endPoint  = (currentX, currentY + self.ROAD_LINE_HEIGHT)
+            
+            currentY = currentY + (2 * self.ROAD_LINE_HEIGHT)
+            
+            points = (startPoint, endPoint)
+            verticalLinePoints.append(points)
+            
+            i = i + 1
+        return verticalLinePoints
+    
+    def calculateHorizontalLinePoints(self, width, height, halfRoadWidth):
+        horizontalLinePoints = []
+        numberOfLineSegments = ((width / self.ROAD_LINE_HEIGHT) / 2) 
+        i = 0
+        currentX = self.ROAD_WIDTH
+        currentY = halfRoadWidth
+        while i < numberOfLineSegments:
+            startPoint = (currentX, currentY)
+            endPoint = (currentX + self.ROAD_LINE_HEIGHT, currentY)
+            
+            currentX = currentX + (2 * self.ROAD_LINE_HEIGHT)
+            
+            points = (startPoint, endPoint)
+            horizontalLinePoints.append(points)
+            
+            i = i + 1
+            
+        currentX = self.ROAD_WIDTH
+        currentY = height - halfRoadWidth
+        i = 0
+        while i < numberOfLineSegments:
+            startPoint = (currentX, currentY)
+            endPoint = (currentX + self.ROAD_LINE_HEIGHT, currentY)
+            
+            currentX = currentX + (2 * self.ROAD_LINE_HEIGHT)
+            
+            points = (startPoint, endPoint)
+            horizontalLinePoints.append(points)
+            
+            i = i + 1
+            
+        return horizontalLinePoints
+    '''
+    points is a list of tuples of (start, end) tuples, ex ((x1,y1),(x2,y2))
+    '''
+    def drawRoadLines(self, surface, points):
+        updatedSurface = surface
+        for point in points:
+            pygame.draw.line(updatedSurface, self.ROAD_LINE_COLOUR, point[0], point[1], self.ROAD_LINE_WIDTH)
+        
+        return updatedSurface
                    
     
     def resetAllVariables(self):
@@ -401,7 +493,7 @@ class Renderer(object):
             
             i = i + 1
         
-        height = 1 * self.BLOCK_Y_SPACER + numberOfRows * self.BLOCK_HEIGHT + (numberOfRows) * self.BLOCK_Y_SPACER
+        height = 2 * self.BLOCK_Y_SPACER + numberOfRows * self.BLOCK_HEIGHT + (numberOfRows) * self.BLOCK_Y_SPACER
         return height
 
     def buildPackage(self, package):
