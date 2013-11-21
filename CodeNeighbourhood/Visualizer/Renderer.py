@@ -182,19 +182,27 @@ class ImageGenerator(object):
         surface.fill(Renderer.BACKGROUND_COLOUR)
         surface.blit(innerSurface, (width + 30, 0))
         font = pygame.font.SysFont("monospace", 18)
-        labelOne = font.render(" BEST", 1, (0,0,0))
-        labelTwo = font.render(" WORST", 1, (0,0,0))
+        labelOne = font.render(" LESS", 1, (0,0,0))
+        labelTwo = font.render(" MORE", 1, (0,0,0))
         surface.blit(labelOne, (0,0))
         surface.blit(labelTwo, (0, height - individualColourHeight))
         
-        outerSurface = pygame.Surface(((width * 2) + 34, height + 4))
+        outerSurface = pygame.Surface(((width * 2) + 34, height + 34))
         outerSurface.fill((0,0,0))
-        outerSurface.blit(surface, (2,2))
+        
+        surfaceHeader = pygame.Surface(((width * 2) + 30, 30))
+        surfaceHeader.fill(Renderer.BACKGROUND_COLOUR)
+        font2 = pygame.font.SysFont("monospace", 14, 'true')
+        headerLabel = font2.render("Code Smells", 1, (0,0,0))
+        surfaceHeader.blit(headerLabel, (4,6))
+        
+        outerSurface.blit(surface, (2,32))
+        outerSurface.blit(surfaceHeader, (2,2))
         return outerSurface
+    
     '''
     A class to generate a temp image representing all of the elements of a package, for each package
     '''
-    
 class Renderer(object):
     MAX_WIDTH = 900
     MAX_HEIGHT = 900
