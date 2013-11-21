@@ -1,4 +1,7 @@
 <?xml version="1.0" ?>
+<!--
+This XML file is used as a sample input for testing the Analyzer package.
+-->
 <CodeBase>
 	<Package name="apps">
 		<Module name="__init__.py"/>

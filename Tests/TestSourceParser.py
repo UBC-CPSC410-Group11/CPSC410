@@ -4,11 +4,12 @@ Created on Nov 17, 2013
 @author: ericchu
 '''
 from CodeNeighbourhood.SourceParser.ModuleParser import ModuleParser
+from CodeNeighbourhood.SourceParser.ClassLister import ClassLister
 import xml.etree.cElementTree as Tree
 import unittest
 
-''' Unit test for the package SourceParser
-; takes TestSample.py as input to test basic functions used in parsing the source code'''
+''' Unit test class for the package SourceParser ''' 
+
 class TestSourceParser(unittest.TestCase):
     
     def setUp(self):
@@ -17,9 +18,7 @@ class TestSourceParser(unittest.TestCase):
         module = Tree.SubElement(package, "Module", {'name' : 'TestSample'})
         self.parser = ModuleParser(module, "TestSample.py", ["SampleClass","SampleClass2"])
 
-    def tearDown(self):
-        pass
-
+    ''' *** ModuleParser Tests *** ''' 
 
     def testMPisEmpty(self):
         self.failUnless(not self.parser.isEmpty(20)) 
@@ -48,7 +47,15 @@ class TestSourceParser(unittest.TestCase):
     def testMPCountComment(self):
         self.failUnless(self.parser.countComments(93, 103) == 3)
         self.failUnless(self.parser.countComments(107, 115) == 4)
-    
+        
+    ''' *** ClassLister Tests *** ''' 
+        
+    def testCLfindClassInModule(self):
+        classLister = ClassLister("")
+        classLister.findClassInModule("TestSample.py", "Tests")
+        self.failUnless(classLister.list == ['SampleClass', 'SampleClass2'])
+        
+        
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

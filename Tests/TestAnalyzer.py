@@ -11,6 +11,7 @@ from CodeNeighbourhood.Analyzer.ScoreQuality import ScoreQuality
 from CodeNeighbourhood.Analyzer.XMLParser import XMLParser
 import unittest
 
+''' Unit test class for the package Analyzer ''' 
 
 class TestAnalyzer(unittest.TestCase):
 
@@ -24,9 +25,7 @@ class TestAnalyzer(unittest.TestCase):
         self.xmlString = "".join(afile.readlines())
         afile.close()
 
-    def tearDown(self):
-        self.xmlString = ""
-
+    ''' *** CustomTypes Tests *** ''' 
 
     def testCTClassConstructor(self):
         self.failUnless(self.aclass.getName() == "TheClassName")
@@ -97,6 +96,35 @@ class TestAnalyzer(unittest.TestCase):
         self.failUnless(self.package.getModules() == [])
         self.package.addModule(self.module)
         self.failUnless(self.package.getModules()[0].getName() == "TheModuleName")
+
+
+    ''' *** XMLParser Tests *** ''' 
+        
+    def testXMLParserParse(self):
+        self.xmlparser = XMLParser(self.xmlString)
+        xmlPackages = self.xmlparser.getPackages()
+        package0 = xmlPackages[0]
+        package1 = xmlPackages[1]
+        self.failUnless(package0.getName() == "apps")
+        self.failUnless(package1.getName() == "conf")
+        
+        moduleNames = []
+        for module in package0.getModules():
+            moduleNames.append(module.getName())
+        self.failUnless(moduleNames == ["__init__.py", "base.py", "decorators.py", "generic.py", "simple.py"])
+        
+        classNames = []
+        for aclass in package0.getModules()[1].getClasses():
+            classNames.append(aclass.getName())
+        self.failUnless(classNames == ["PyntaAppBase", "PyntaApp"])
+        
+        methodNames = []
+        for method in package0.getModules()[1].getClasses()[1].getMethods():
+            methodNames.append(method.getName())
+        self.failUnless(methodNames == ["__init__","__call__","dispatch","init_session","save_session","app_by_url","get_context","get","post","head"])
+        
+    
+    ''' *** CustomTypes Tests *** ''' 
         
     def testSQgetStandardDeviation(self):
         self.failUnless(self.score.getStandardDeviation([0]) == 0)
@@ -126,38 +154,26 @@ class TestAnalyzer(unittest.TestCase):
         self.failUnless(self.score.hugeMethScore([10000,300,200,500,50,124]) == 0)
         self.failUnless(self.score.hugeMethScore([100,300,200,700,50,12411]) == 0)
         self.failUnless(self.score.hugeMethScore([100,700,200,1100,50,124]) == 0)
-
-    def testXMLParserParse(self):
-        self.xmlparser = XMLParser(self.xmlString)
-        xmlPackages = self.xmlparser.getPackages()
-        package0 = xmlPackages[0]
-        package1 = xmlPackages[1]
-        self.failUnless(package0.getName() == "apps")
-        self.failUnless(package1.getName() == "conf")
         
-        moduleNames = []
-        for module in package0.getModules():
-            moduleNames.append(module.getName())
-        self.failUnless(moduleNames == ["__init__.py", "base.py", "decorators.py", "generic.py", "simple.py"])
-        
-        classNames = []
-        for aclass in package0.getModules()[1].getClasses():
-            classNames.append(aclass.getName())
-        self.failUnless(classNames == ["PyntaAppBase", "PyntaApp"])
-        
-        methodNames = []
-        for method in package0.getModules()[1].getClasses()[1].getMethods():
-            methodNames.append(method.getName())
-        self.failUnless(methodNames == ["__init__","__call__","dispatch","init_session","save_session","app_by_url","get_context","get","post","head"])
-        
-    ''' this tests scores applied to the sample xml input to ensure all score assignment are accurate '''
+    #this tests scores applied to the sample xml input to ensure all score assignment are accurate
     def testScoreAssignments(self):
         self.xmlparser = XMLParser(self.xmlString)
+        xmlPackages = self.xmlparser.getPackages()
         scores = ScoreQuality()
-        scores.
-         = self.xmlparser.getPackages()
-
-        for module
+        scores.scorePackages(xmlPackages)
+        
+        classScores = []
+        methodScores = []
+        for package in xmlPackages:
+            for module in package.getModules():
+                for theClass in module.getClasses():
+                    classScores.append(theClass.getScore())
+                    for method in theClass.getMethods():
+                        methodScores.append(method.getScore())
+        
+        self.failUnless(classScores == [6,7,8,8,6,8,5,7,8])
+        self.failUnless(methodScores == [6,6,3,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,2,5])
+        
         
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
