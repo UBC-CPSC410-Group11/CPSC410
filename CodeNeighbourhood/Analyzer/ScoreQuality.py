@@ -3,7 +3,7 @@ Created on 2013-11-15
 
 @author: jonrl33
 '''
-from CustomTypes import *
+from CustomTypes import Package, Module, Class, Method, OutCall
 
 class ScoreQuality(object):
     '''

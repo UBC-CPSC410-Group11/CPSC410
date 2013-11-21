@@ -3,16 +3,18 @@ Created on 2013-10-22
 
 @author: jonrl33
 '''
-from xml.dom.minidom import parse, parseString
-from CustomTypes import *
+from xml.dom.minidom import parseString
+from CustomTypes import Package, Module, Class, Method
 
 class XMLParser(object):
     packages = []
     def __init__(self, in_File):
         self.parseFile(in_File)
-            
-    def parseFile(self, in_File):
-        doc = parseString(in_File)
+    
+    # Given an XMLString from the SourceParser, parses the string and populates self.packages
+    # with corresponding Modules, Classes, Methods, and OutCalls to the given input        
+    def parseFile(self, in_String):
+        doc = parseString(in_String)
         if doc.hasChildNodes():
             for pkgNode in doc.getElementsByTagName("Package"):
                 pkg = Package(pkgNode.getAttribute("name"))
@@ -28,9 +30,8 @@ class XMLParser(object):
                             
                             for classNode in modNode.getElementsByTagName("Class"):
                                 className = classNode.getAttribute("name")
-                                classWidth = classNode.getAttribute("width")
                                 classLines = classNode.getAttribute("lines")
-                                cl = Class(className, classWidth, classLines)
+                                cl = Class(className, classLines)
                                 if (classNode.hasChildNodes()):
                                     
                                     for methodNode in classNode.getElementsByTagName("Method"):
@@ -49,7 +50,7 @@ class XMLParser(object):
                                 mod.addClass(cl)
                         for classNode in modNode.getElementsByTagName("FreeMethod"):
                             mod.addFreeMethod()
-        
+    # Returns the list of Packages    
     def getPackages(self):
         return self.packages
 '''    
