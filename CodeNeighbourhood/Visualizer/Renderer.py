@@ -154,6 +154,9 @@ class ImageGenerator(object):
         maxRowHeight = max(rowHeights)
         dimensions = ((imageWidth, imageHeight), maxRowHeight)
         return dimensions
+    '''
+    Generates a colour legend on the lower-right hand corner of a pygame.Surface
+    '''
     
     def createColourLegend(self):
         width = self.COLOUR_LEGEND_WIDTH
@@ -277,7 +280,9 @@ class Renderer(object):
     
     def __init__(self, packages):
         self.packages = packages
-    
+    '''
+    Returns a pygame.Surface
+    '''
     def getScreen(self):
         return self.screen
       
@@ -314,20 +319,26 @@ class Renderer(object):
             i = i + 1
         
         return self.imageDimensions
-    
+    '''
+    Initialize pygame and create the screen
+    '''
     def initDrawing(self):
         pygame.init()
         self.screen = pygame.display.set_mode((self.MAX_WIDTH,self.MAX_HEIGHT))
         pygame.display.set_caption('Code Neighbourhood')
         
         return None
-    
+    '''
+    Clear the contents of the screen by placing another pygame.Surface on top of it
+    '''
     def resetScreen(self):
         screen2 = pygame.Surface((self.MAX_WIDTH,self.MAX_HEIGHT))
         screen2.fill(self.BACKGROUND_COLOUR)
         self.screen.blit(screen2,(0,0))
         return None
-    
+    '''
+    Save the current contents of the screen to a temp_image file
+    '''
     def saveScreen(self, i):
         extension = self.FILE_EXTENSION
         strId = str(i)
@@ -340,7 +351,9 @@ class Renderer(object):
         roadSurfaceWithLines = self.drawDashedRoadLines(roadSurface, self.surfaceWidth + 2 * self.ROAD_WIDTH, self.surfaceHeight + 2 * self.ROAD_WIDTH)
         roadSurfaceWithLines.blit(saveScreen, (self.ROAD_WIDTH, self.ROAD_WIDTH), (0,0,self.surfaceWidth, self.surfaceHeight))
         pygame.image.save(roadSurfaceWithLines, fileName)
-        
+    '''
+    Draw dashed lines on a surface to represent a road's dashed lines
+    '''    
     def drawDashedRoadLines(self, surface, width, height):
         halfRoadWidth = self.ROAD_WIDTH/2
         verticalLinePoints = self.calculateVerticalLinePoints(width, height, halfRoadWidth)
@@ -348,7 +361,9 @@ class Renderer(object):
         surfaceWithLines = self.drawRoadLines(surface, verticalLinePoints)
         surfaceWithLines = self.drawRoadLines(surfaceWithLines, horizontalLinePoints)
         return surfaceWithLines
-    
+    '''
+    Determine the points [(x1,y1),(x2,y2),...,(xn, yn)] where lines should be drawn for vertical roads
+    '''
     def calculateVerticalLinePoints(self, width, height, halfRoadWidth):
         verticalLinePoints = []
         numberOfLineSegments = ((height / self.ROAD_LINE_HEIGHT) / 2) - 1
@@ -380,7 +395,9 @@ class Renderer(object):
             
             i = i + 1
         return verticalLinePoints
-    
+        '''
+    Determine the points [(x1,y1),(x2,y2),...,(xn, yn)] where lines should be drawn for horizontal roads
+    '''
     def calculateHorizontalLinePoints(self, width, height, halfRoadWidth):
         horizontalLinePoints = []
         numberOfLineSegments = ((width / self.ROAD_LINE_HEIGHT) / 2) 
@@ -423,7 +440,9 @@ class Renderer(object):
         
         return updatedSurface
                    
-    
+    '''
+    reset all variables to default values
+    '''
     def resetAllVariables(self):
         self.currentX = self.BLOCK_X_SPACER
         self.currentY = self.BLOCK_Y_SPACER + 20
@@ -453,11 +472,12 @@ class Renderer(object):
     '''
     Call this method to populate the variable lists with instances of custom classes representing the various elements of the image
     '''
-    
     def buildNeighbourhood(self, package):
         self.buildPackage(package)
         return None
-    
+    '''
+    Determine the dimensions of an image representing an individual package
+    '''
     def calculateImageDimensions(self, package):
         modules = package.getModules()
         blockRects = []
@@ -468,7 +488,9 @@ class Renderer(object):
         width = self.calculateImageWidth(blockRects)
         height = self.calculateImageHeight(blockRects, width)
         return (width, height)
-    
+    '''
+    Calculate the width of an image representing an individual package
+    '''
     def calculateImageWidth(self, blockRects):
         widestBlock = 0
         sumOfWidths = 0
@@ -480,7 +502,9 @@ class Renderer(object):
                     widestBlock = x_val
         width = (widestBlock + 4 * self.BLOCK_X_SPACER) + 10
         return width
-    
+    '''
+    Calculate the height of an image representing an individual package
+    '''
     def calculateImageHeight(self, blockRects, width):
         numberOfRows = 1
         blockWidths = []
@@ -503,16 +527,20 @@ class Renderer(object):
         
         height = (self.BLOCK_Y_SPACER + numberOfRows * self.BLOCK_HEIGHT + (numberOfRows) * self.BLOCK_Y_SPACER) + 10
         return height
-
+    
+    '''
+    Generate instances of related custom-classes for all of the elements of a packge
+    '''
     def buildPackage(self, package):
-        #Packages are implicitly represented in the output as blocks which are close together
         
         for module in package.modules:
             blockColour = self.PACKAGE_BLOCK_COLOURS[self.blockColourCounter]
             self.buildBlock(module, blockColour)
 
         return None
-
+    '''
+    Generate a Block instance representing a module
+    '''
     def buildBlock (self, module, blockColour):
         #Modules are explicitly represented in the output as blocks (of 'grass') which surround the houses(classes) of that module
         blockRects = self.calculateBlockDimensions(module) #a list of tuples representing the rect dimensions for a single block
@@ -626,7 +654,9 @@ class Renderer(object):
         self.remainingRowHeight = self.remainingRowHeight - height - self.BLOCK_Y_SPACER
         return None
     
-    
+    '''
+    Construct House instances for each class
+    '''
     def buildHouses(self, topLeft, classes):
         self.blockCurrentX = topLeft[0] + self.HOUSE_X_SPACER
         self.blockCurrentY = topLeft[1] + self.HOUSE_Y_SPACER
@@ -637,7 +667,10 @@ class Renderer(object):
         
         self.blockCurrentY = topLeft[1] + self.TENT_Y_SPACER
         return None
-
+    
+    '''
+    Construct a House instance representing a class
+    '''
     def buildHouse(self, theClass, x, y):
         methods = theClass.getMethods()
         self.windowTallestWindow = self.calculateTallestWindow(methods)
@@ -655,6 +688,9 @@ class Renderer(object):
         self.houses.append(theHouse)
         return None
     
+    '''
+    Determine the Y value for a house's position
+    '''
     def calculateHouseYPosition(self, currentYPosition, height):
         #currentYPosition should be the y value of the top of a block + self.BlOCK_Y_SPACER
         baseYOfBlock = currentYPosition - self.HOUSE_Y_SPACER + self.BLOCK_HEIGHT
@@ -663,6 +699,9 @@ class Renderer(object):
 
         return y
     
+    '''
+    Determine the Width of a House
+    '''
     def calculateHouseWidth(self, theClass):
         methods = theClass.getMethods()
         width = self.WINDOW_X_SPACER
@@ -675,7 +714,9 @@ class Renderer(object):
         
         
         return width 
-    
+    '''
+    Determine the Height of a House
+    '''
     def calculateHouseHeight(self, theClass):
         methods = theClass.getMethods()
 
@@ -694,8 +735,9 @@ class Renderer(object):
         if height < self.HOUSE_MIN_HEIGHT:
             height = self.HOUSE_MIN_HEIGHT
         return height
-    
-    
+    '''
+    Construct Window instances for each method in methods
+    '''
     def buildWindows(self, methods, houseTopLeft, houseWidth, houseHeight):
         windows = []
         self.windowCurrentX = houseTopLeft[0] + self.WINDOW_X_SPACER
@@ -708,7 +750,9 @@ class Renderer(object):
             
         self.windowCurrentRow = 0
         return windows
-    
+    '''
+    Construct a Window instance representing a method
+    '''
     def buildWindow(self, method, houseTopLeft, houseWidth, houseHeight):
         dimensions = self.calculateWindowDimensions(method, houseTopLeft, houseWidth, houseHeight)
         topLeft = dimensions[0]
@@ -730,7 +774,9 @@ class Renderer(object):
         self.windowCurrentX = self.windowCurrentX + width + self.WINDOW_X_SPACER
     
         return dimensions
-   
+    '''
+    Determine the tallest Window from a list of methods (The method with the most lines)
+    '''
     def calculateTallestWindow(self, methods):
         tallestMethod = 0
         for method in methods:
@@ -738,7 +784,9 @@ class Renderer(object):
             if height > tallestMethod:
                 tallestMethod = height
         return tallestMethod
-    
+    '''
+    Construct Tent instances for each method in freeMethods
+    '''
     def buildTents(self, freeMethods):
         i = 0
         while i < freeMethods:
@@ -746,7 +794,9 @@ class Renderer(object):
             self.blockCurrentX = self.blockCurrentX + self.TENT_WIDTH + self.TENT_X_SPACER
             i = i + 1
         return None
-    
+    '''
+    Construct a Tent instance representing a free Method
+    '''
     def buildTent(self, topLeft):
         tent = Tent(topLeft)
         self.tents.append(tent)
@@ -774,13 +824,17 @@ class Renderer(object):
         rect = (left, top, width, length)
         self.drawFilledRoundedRect(self.screen, colour, rect, self.BLOCK_CORNER_RADIUS)
         
-        return None     
-    
+        return None   
+    '''
+    Render the Houses
+    '''  
     def drawHouses(self):
         for house in self.houses:
             self.drawHouse(house)
         return None
-    
+    '''
+    Render an individual House
+    '''
     def drawHouse(self, house):
         topLeft = house.getTopLeft()
         left = topLeft[0]
@@ -799,7 +853,9 @@ class Renderer(object):
         self.drawHouseDoor(topLeft, width, length)
         
         return None
-    
+    '''
+    Draw the roof of an individual house
+    '''
     def drawHouseRoof(self, topLeft, width):
         pointList = []
         pointList.append(topLeft)
@@ -816,7 +872,9 @@ class Renderer(object):
         pygame.draw.polygon(self.screen, colour, pointList, 0)
         
         return None
-    
+    '''
+    render the door of an individual house
+    '''
     def drawHouseDoor(self, topLeft, width, height):
         x_center = topLeft[0] + width/2
         y_baseline = topLeft[1] + height
@@ -827,11 +885,15 @@ class Renderer(object):
         pygame.draw.rect(self.screen, colour, rect, 0)
         
         return None
-    
+    '''
+    render all of the windows for an individual house
+    '''
     def drawWindows(self, windows):
         for window in windows:
             self.drawWindow(window)
-    
+    '''
+    render a single window for an individual house
+    '''
     def drawWindow(self, window):
         topLeft = window.getTopLeft()
         width = window.getWidth()
@@ -843,11 +905,15 @@ class Renderer(object):
         pygame.draw.rect(self.screen, colour, rect, 0)
         
         return None
-    
+    '''
+    render all of the tents
+    '''
     def drawTents(self):
         for tent in self.tents:
             self.drawTent(tent)
-    
+    '''
+    render an individual tent
+    '''
     def drawTent(self, tent):
         topLeft = tent.getTopLeft()
         left = topLeft[0]
@@ -906,7 +972,9 @@ class Renderer(object):
         pygame.draw.rect(surface, colour, rightRect, 0)
         
         return None
-    
+'''
+A class to represent the features of a House
+''' 
 class House(object):
     name = ''
     length = 0
@@ -943,7 +1011,9 @@ class House(object):
     def getWindows(self):
         return self.windows
 
-    
+'''
+A class to represent a Window
+'''
 class Window(object):
     height = 0
     width = 0
@@ -967,7 +1037,9 @@ class Window(object):
     
     def getTopLeft(self):
         return self.topLeft
-     
+'''
+A class to represent a Tent
+'''
 class Tent(object):
     topLeft = (0,0)
     
@@ -977,7 +1049,9 @@ class Tent(object):
     def getTopLeft(self):
         return self.topLeft
         
-        
+'''
+A class to represent a Block
+'''        
 class Block(object):
     topLeft = (0,0)
     length = 0
@@ -1001,26 +1075,3 @@ class Block(object):
     
     def getColour(self):
         return self.colour
-    
-class PackageBlock(object):
-    blocks = []
-    houses = []
-    topLeft = (0,0)
-    
-    def __init__(self, blocks, houses):
-        self.blocks = blocks
-        self.houses = houses
-        
-    def getBlocks(self):
-        return self.blocks
-    
-    def getHouses(self):
-        return self.houses
-    
-    def setTopLeft(self, topLeft):
-        self.topLeft = topLeft
-        
-    def getTopLeft(self):
-        return self.topLeft
-
-        
