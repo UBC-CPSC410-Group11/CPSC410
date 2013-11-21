@@ -1,0 +1,85 @@
+<?xml version="1.0" ?>
+<CodeBase>
+	<Package name="apps">
+		<Module name="__init__.py"/>
+		<Module name="base.py">
+			<Class lines="1" name="PyntaAppBase">
+				<OutCall/>
+			</Class>
+			<Class lines="85" name="PyntaApp">
+				<Method comments="0" documentation="0" lines="3" name="__init__" parameters="2"/>
+				<Method comments="0" documentation="0" lines="25" name="__call__" parameters="2"/>
+				<Method comments="10" documentation="0" lines="29" name="dispatch" parameters="1"/>
+				<Method comments="0" documentation="0" lines="3" name="init_session" parameters="0"/>
+				<Method comments="0" documentation="0" lines="6" name="save_session" parameters="0"/>
+				<Method comments="0" documentation="0" lines="6" name="app_by_url" parameters="0"/>
+				<Method comments="0" documentation="0" lines="2" name="get_context" parameters="1"/>
+				<Method comments="0" documentation="0" lines="2" name="get" parameters="1"/>
+				<Method comments="0" documentation="0" lines="2" name="post" parameters="1"/>
+				<Method comments="0" documentation="0" lines="2" name="head" parameters="1"/>
+				<OutCall>
+					<ClassName count="3" name="LazySession"/>
+				</OutCall>
+			</Class>
+		</Module>
+		<Module name="decorators.py">
+			<FreeMethod name="require_method"/>
+		</Module>
+		<Module name="generic.py">
+			<Class lines="50" name="CRUDApp">
+				<Method comments="0" documentation="0" lines="4" name="create_object" parameters="1"/>
+				<Method comments="0" documentation="0" lines="2" name="get_dataset" parameters="0"/>
+				<Method comments="0" documentation="0" lines="2" name="get_object" parameters="1"/>
+				<Method comments="0" documentation="0" lines="3" name="update_object" parameters="2"/>
+				<Method comments="0" documentation="0" lines="2" name="delete_object" parameters="1"/>
+				<Method comments="0" documentation="0" lines="4" name="do_create" parameters="0"/>
+				<Method comments="0" documentation="0" lines="6" name="do_list" parameters="0"/>
+				<Method comments="0" documentation="0" lines="4" name="do_detail" parameters="1"/>
+				<Method comments="0" documentation="0" lines="4" name="do_update" parameters="1"/>
+				<Method comments="0" documentation="0" lines="3" name="do_delete" parameters="1"/>
+				<OutCall>
+					<ClassName count="2" name="Paginator"/>
+					<ClassName count="9" name="Anydbm"/>
+				</OutCall>
+			</Class>
+		</Module>
+		<Module name="simple.py">
+			<Class lines="8" name="Static">
+				<Method comments="0" documentation="0" lines="2" name="get" parameters="1"/>
+				<Method comments="0" documentation="0" lines="2" name="call" parameters="2"/>
+				<OutCall/>
+			</Class>
+		</Module>
+	</Package>
+	<Package name="conf">
+		<Module name="__init__.py">
+			<Class lines="1" name="ConfigurationError">
+				<OutCall/>
+			</Class>
+			<Class lines="2" name="UnconfiguredSettings">
+				<Method comments="0" documentation="0" lines="2" name="__getattribute__" parameters="1"/>
+				<OutCall/>
+			</Class>
+			<Class lines="24" name="Settings">
+				<Method comments="0" documentation="0" lines="4" name="__init__" parameters="1"/>
+				<Method comments="0" documentation="0" lines="2" name="__bool__" parameters="0"/>
+				<Method comments="0" documentation="0" lines="2" name="__getattr__" parameters="1"/>
+				<Method comments="0" documentation="0" lines="8" name="__setattr__" parameters="2"/>
+				<Method comments="0" documentation="0" lines="2" name="__delattr__" parameters="1"/>
+				<OutCall/>
+			</Class>
+			<FreeMethod name="setup_settings"/>
+		</Module>
+		<Module name="empty_settings.py"/>
+		<Module name="provider.py">
+			<Class lines="38" name="SettingsProvider">
+				<Method comments="8" documentation="0" lines="32" name="__new__" parameters="3"/>
+				<OutCall/>
+			</Class>
+			<Class lines="8" name="SettingsConsumer">
+				<Method comments="3" documentation="3" lines="5" name="__init__" parameters="3"/>
+				<OutCall/>
+			</Class>
+		</Module>
+	</Package>
+</CodeBase>
