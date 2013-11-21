@@ -96,9 +96,9 @@ class SampleClass2(object):
 
                 self.db[tag].save(obj_to_save)
                 
-    '''jfkds;jfkds;
-    fdssdgsdfdsfdsfsd
-    fjdksljfkldsafds''' 
+    '''these are comments
+    these are comments
+    these are comments''' 
                
     def delete(self, tag, key):
         self.db[tag].remove(key)
@@ -106,5 +106,10 @@ class SampleClass2(object):
     def get_free_key(self, tag):
         return self.db[tag].save({})
 
+    # this is a comment
+    # this is another comment
     def get_dataset(self, tag):
-        return self.db[tag].find()
+        '''fdsfdsfds'''
+        self.db[tag].find()
+        #dsfdsgsjgirwjkfdsjk;
+        return 
