@@ -16,7 +16,7 @@ import unittest
 class TestAnalyzer(unittest.TestCase):
 
     def setUp(self):
-        self.aclass = Class("TheClassName",5,30)
+        self.aclass = Class("TheClassName",30)
         self.method = Method("TheMethodName",3,4,2,0)
         self.module = Module("TheModuleName")
         self.package = Package("ThePackageName")
@@ -29,7 +29,6 @@ class TestAnalyzer(unittest.TestCase):
 
     def testCTClassConstructor(self):
         self.failUnless(self.aclass.getName() == "TheClassName")
-        self.failUnless(self.aclass.getWidth() == 5)
         self.failUnless(self.aclass.getLines() == 30)
         
     def testCTClassAddMethod(self):
@@ -41,9 +40,9 @@ class TestAnalyzer(unittest.TestCase):
         
     def testCTClassAddOutCall(self):
         self.failUnless(self.aclass.getOutCalls() == [])
-        self.aclass.addOutCall("caller0", "callee0")
-        self.aclass.addOutCall("caller1", "callee1")
-        self.aclass.addOutCall("caller2", "callee2")
+        self.aclass.addOutCall("caller0", "callee0",6)
+        self.aclass.addOutCall("caller1", "callee1",4)
+        self.aclass.addOutCall("caller2", "callee2",5)
         outcall0 = self.aclass.getOutCalls()[0]
         outcall1 = self.aclass.getOutCalls()[1]
         outcall2 = self.aclass.getOutCalls()[2]
@@ -86,7 +85,7 @@ class TestAnalyzer(unittest.TestCase):
         self.module.addClass(self.aclass)
         self.failUnless(not (self.module.getClasses() == []))
         self.failUnless(self.module.getClasses()[0].getName() == "TheClassName")
-        self.module.addClass(Class("Class2",3,50))
+        self.module.addClass(Class("Class2",50))
         self.failUnless(self.module.getClasses()[1].getName() == "Class2")
 
     def testCTPackageConstructor(self):
@@ -146,11 +145,11 @@ class TestAnalyzer(unittest.TestCase):
         
     def testSQhugeMethodScore(self):
         self.failUnless(self.score.hugeMethScore([100,300,200,231,50,124]) == 3)
-        self.failUnless(self.score.hugeMethScore([100,300,200,400,50,124]) == 3)
+        self.failUnless(self.score.hugeMethScore([100,300,200,400,50,124]) == 2)
         self.failUnless(self.score.hugeMethScore([100,300,200,401,50,124]) == 2)
         self.failUnless(self.score.hugeMethScore([100,300,200,500,50,124]) == 2)
-        self.failUnless(self.score.hugeMethScore([100,300,200,700,50,124]) == 1)
-        self.failUnless(self.score.hugeMethScore([100,300,200,601,50,124]) == 1)
+        self.failUnless(self.score.hugeMethScore([100,300,200,700,50,124]) == 0)
+        self.failUnless(self.score.hugeMethScore([100,300,200,601,50,124]) == 0)
         self.failUnless(self.score.hugeMethScore([10000,300,200,500,50,124]) == 0)
         self.failUnless(self.score.hugeMethScore([100,300,200,700,50,12411]) == 0)
         self.failUnless(self.score.hugeMethScore([100,700,200,1100,50,124]) == 0)
@@ -171,8 +170,8 @@ class TestAnalyzer(unittest.TestCase):
                     for method in theClass.getMethods():
                         methodScores.append(method.getScore())
         
-        self.failUnless(classScores == [6,7,8,8,6,8,5,7,8])
-        self.failUnless(methodScores == [6,6,3,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,2,5])
+        self.failUnless(classScores == [6, 5, 8, 8, 6, 8, 3, 7, 8])
+        self.failUnless(methodScores == [6, 6, 4, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 2, 5])
         
         
 if __name__ == "__main__":
