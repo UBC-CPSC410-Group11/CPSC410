@@ -635,7 +635,6 @@ class Renderer(object):
             width = self.calculateHouseWidth(c)
             self.blockCurrentX = self.blockCurrentX + width + self.HOUSE_X_SPACER
         
-        #set the currentY to the position needed for building the tents
         self.blockCurrentY = topLeft[1] + self.TENT_Y_SPACER
         return None
 
@@ -978,21 +977,6 @@ class Tent(object):
     def getTopLeft(self):
         return self.topLeft
         
-class Powerline(object):
-    start = (0,0)
-    finish = (0,0)
-    
-    def __init__(self, start, finish):
-        self.start = start
-        self.finish = finish
-
-class Clothesline(object):
-    start = (0,0)
-    finish = (0,0)
-    
-    def __init__(self, start, finish):
-        self.start = start
-        self.finish = finish
         
 class Block(object):
     topLeft = (0,0)
