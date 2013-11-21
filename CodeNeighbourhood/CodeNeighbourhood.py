@@ -4,11 +4,11 @@ Created on Oct 31, 2013
 @author: Mike and Jon
 '''
 from SourceParser.DirectoryCrawler import directoryCrawl
-from Analyzer.CustomTypes import *
+from Analyzer.CustomTypes import setInModuleBools
 from Visualizer.Renderer import RendererFacade
 
-from Analyzer.XMLParser import *
-from Analyzer.ScoreQuality import *
+from Analyzer.XMLParser import XMLParser
+from Analyzer.ScoreQuality import ScoreQuality
 
 def main():
     XMLString = directoryCrawl('pyntaCode')
