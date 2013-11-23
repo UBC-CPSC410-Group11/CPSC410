@@ -8,7 +8,6 @@ from CodeNeighbourhood.Visualizer.Renderer import House
 from CodeNeighbourhood.Visualizer.Renderer import Window
 from CodeNeighbourhood.Visualizer.Renderer import Tent
 from CodeNeighbourhood.Visualizer.Renderer import Block
-from CodeNeighbourhood.Visualizer.Renderer import PackageBlock
 from CodeNeighbourhood.Analyzer.XMLParser import XMLParser
 import unittest
 
@@ -55,32 +54,6 @@ class TestVisualizer(unittest.TestCase):
         self.failUnless(block.getWidth() == 2)
         self.failUnless(block.getLength() == 52)
         self.failUnless(block.getColour() == (53,63,12))
-    
-    ''' tests packageBlock constructor to ensure that houses and blocks can be properly put together to construct package blocks ''' 
-    def testPackageBlockConstructor(self):
-        house0 = House("house0", 4, 5, (5,3), 7)
-        house1 = House("house1", 4, 5, (5,3), 7)
-        house2 = House("house2", 4, 5, (5,3), 7)
-        house3 = House("house3", 4, 5, (5,3), 7)
-        houses = [house0, house1, house2, house3]
-        
-        block0 = Block((9,7), 0, 52, (53,63,12))
-        block1 = Block((9,7), 1, 52, (53,63,12))
-        block2 = Block((9,7), 2, 52, (53,63,12))
-        block3 = Block((9,7), 3, 52, (53,63,12))
-        blocks = [block0, block1, block2, block3]
-
-        packageBlock = PackageBlock(blocks, houses)
-        
-        blockWidths = []
-        for ablock in packageBlock.getBlocks():
-            blockWidths.append(ablock.getWidth())
-        self.failUnless(blockWidths == [0, 1, 2, 3])
-        
-        houseNames = []
-        for ahouse in packageBlock.getHouses():
-            houseNames.append(ahouse.getName())
-        self.failUnless(houseNames == ['house0', 'house1', 'house2', 'house3'])
     
     ''' tests Renderer::calculateTallestWindow to ensure that size of tallest window can be properly derived from XML input
         through parsing and processing ''' 

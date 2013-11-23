@@ -3,7 +3,8 @@ Created on Oct 23, 2013
 
 @author: Mike Kelly
 '''
-from Analyzer.CustomTypes import *
+#from Analyzer.CustomTypes import *
+#import CodeNeighbourhood.Analyzer.CustomTypes.Class
 import pygame
 import sys
 
