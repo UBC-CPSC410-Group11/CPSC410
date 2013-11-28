@@ -3,8 +3,6 @@ Created on Oct 23, 2013
 
 @author: Mike Kelly
 '''
-#from Analyzer.CustomTypes import *
-#import CodeNeighbourhood.Analyzer.CustomTypes.Class
 import pygame
 import sys
 
@@ -543,8 +541,7 @@ class Renderer(object):
     Generate a Block instance representing a module
     '''
     def buildBlock (self, module, blockColour):
-        #Modules are explicitly represented in the output as blocks (of 'grass') which surround the houses(classes) of that module
-        blockRects = self.calculateBlockDimensions(module) #a list of tuples representing the rect dimensions for a single block
+        blockRects = self.calculateBlockDimensions(module)
         colour = blockColour
         
         i = 0
@@ -575,7 +572,6 @@ class Renderer(object):
     def calculateBlockDimensions(self, module):
         dimensions = []
         classes = module.getClasses()
-        #Determine the width needed to represent a block
         totalWidth = 0
         width = 0
         
